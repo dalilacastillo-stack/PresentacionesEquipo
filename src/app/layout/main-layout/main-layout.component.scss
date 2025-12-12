@@ -1,0 +1,86 @@
+//MENU PRINCIPAL
+/* --- CONTENEDOR --- */
+.main-container {
+  height: 100vh;
+}
+
+/* --- SIDENAV BASE --- */
+.sidenav {
+  width: 240px;
+  transition: width 0.25s ease-in-out;
+  overflow: hidden;
+  background-color: #1B432C !important;
+  color: white;
+}
+
+/* --- SIDENAV COLAPSADO --- */
+.sidenav.collapsed {
+  width: 70px;
+
+  .mat-expansion-panel-header span,
+  .mat-list-item span {
+    display: none !important;
+  }
+}
+
+/* --- BOTÓN COLAPSAR --- */
+.toggle-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+}
+
+/* --- ÍCONOS --- */
+.sidenav .mat-icon {
+  color: white !important;
+  margin-right: 10px;      /* ← ARREGLA ICONO ENCIMA DEL TEXTO */
+  font-family: 'Material Icons' !important;
+  font-size: 20px;        /* ← AJUSTÁS EL TAMAÑO ACÁ */
+}
+
+/* Si querés más espacio entre icono y texto, podés subir este valor */
+.icon {
+  margin-right: 8px;
+}
+
+/* --- TEXTO DEL MENÚ --- */
+.sidenav .mat-list-item span,
+.sidenav .mat-expansion-panel-header span,
+.sidenav .mat-panel-title {
+  color: white !important;
+  font-size: 13px !important;
+  font-family: "gotham", sans-serif !important;
+}
+
+/* --- EXPANSION PANELS --- */
+
+/* Fondo transparente para evitar blancos */
+.sidenav .mat-expansion-panel,
+.sidenav .mat-expansion-panel-header {
+  background: transparent !important;
+}
+
+/* Panel expandido en tono más fuerte */
+.sidenav .mat-expansion-panel.mat-expanded {
+  background-color: #1B432C !important;
+}
+
+/* --- LINK ACTIVO Y HOVER --- */
+.sidenav .mat-list-item:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.active-link {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* --- CONTENIDO --- */
+.content {
+  padding: 16px;
+}
+
+.page-content {
+  padding: 24px;
+}

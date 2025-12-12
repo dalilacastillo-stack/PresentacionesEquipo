@@ -1,0 +1,193 @@
+.badge-cargado {
+    background-color: rgb(166, 177, 19);
+  }
+  
+  .badge-enProceso {
+    background-color: dodgerblue;
+  }
+  
+  .badge-eliminado {
+    background-color: rgb(190, 21, 21);
+  }
+  
+  .badge-procesado {
+    background-color:  green;
+  }
+  
+  .badge-Creada {
+    background-color: rgb(5, 86, 133);
+  }
+    
+  .badge-ConRechazos {
+    background-color: rgb(85, 7, 7);
+  }
+  
+
+
+
+
+/* ============================================================
+   BASE GENERAL PARA TODOS LOS DIALOGS
+   ============================================================ */
+
+.mat-dialog-container {
+  border-radius: 14px !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+  overflow: hidden !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22) !important;
+  border: 1px solid rgba(27, 67, 44, 0.08);
+   max-width: 600px !important;
+}
+
+/* ——— Encabezado ——— */
+.dialog-header-bar {
+  height: 4px;
+  width: 100%;
+}
+
+/* ——— Títulos ——— */
+.dialog-title-modern {
+  font-size: 20px;
+  font-weight: 600;
+  padding: 20px 24px 12px 24px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Ícono circular */
+.dialog-title-modern mat-icon {
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 22px;
+}
+
+/* ——— Contenido ——— */
+.dialog-content-modern {
+  padding: 0 24px 22px 24px;
+  font-size: 15px;
+  color: #2f3e37;
+  line-height: 1.55;
+}
+
+/* ——— Footer ——— */
+.dialog-actions-modern {
+  padding: 18px 24px;
+  background: #fafafa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ——— Botón cancelar ——— */
+.btn-cancel-modern {
+  color: #555 !important;
+  font-weight: 500;
+}
+
+/* ——— Botón principal ——— */
+.btn-primary-modern {
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 6px 26px;
+  border-radius: 8px;
+  transition: 0.25s ease;
+}
+
+/* ============================================================
+   VARIANTES POR TIPO DE DIÁLOGO
+   ============================================================ */
+
+/* ===== CONFIRM (verde profundo #1B432C) ===== */
+.dialog-confirm .dialog-header-bar {
+  background: #1B432C;
+}
+
+.dialog-confirm .dialog-title-modern {
+  color: #1B432C;
+}
+
+.dialog-confirm .dialog-title-modern mat-icon {
+  background: rgba(27, 67, 44, 0.1);
+  color: #1B432C;
+}
+
+.dialog-confirm .btn-primary-modern {
+  background: #1B432C !important;
+  box-shadow: 0 3px 8px rgba(27, 67, 44, 0.28);
+}
+.dialog-confirm .btn-primary-modern:hover {
+  background: #163724 !important;
+}
+
+/* ===== SUCCESS (verde brillante) ===== */
+.dialog-success .dialog-header-bar {
+  background: #2E7D32;
+}
+
+.dialog-success .dialog-title-modern {
+  color: #2E7D32;
+}
+
+.dialog-success .dialog-title-modern mat-icon {
+  background: #e8f5e9;
+  color: #2E7D32;
+}
+
+.dialog-success .btn-primary-modern {
+  background: #2E7D32 !important;
+  box-shadow: 0 3px 8px rgba(46, 125, 50, 0.28);
+}
+.dialog-success .btn-primary-modern:hover {
+  background: #25642a !important;
+}
+
+/* ===== WARNING (ámbar) ===== */
+.dialog-warning .dialog-header-bar {
+  background: #F9A825;
+}
+
+.dialog-warning .dialog-title-modern {
+  color: #F9A825;
+}
+
+.dialog-warning .dialog-title-modern mat-icon {
+  background: #fff8e1;
+  color: #F9A825;
+}
+
+.dialog-warning .btn-primary-modern {
+  background: #F9A825 !important;
+  color: #000 !important;
+}
+.dialog-warning .btn-primary-modern:hover {
+  background: #d68f1f !important;
+}
+
+/* ===== ERROR (rojo) ===== */
+.dialog-error .dialog-header-bar {
+  background: #D32F2F;
+}
+
+.dialog-error .dialog-title-modern {
+  color: #D32F2F;
+}
+
+.dialog-error .dialog-title-modern mat-icon {
+  background: #ffebee;
+  color: #D32F2F;
+}
+
+.dialog-error .btn-primary-modern {
+  background: #D32F2F !important;
+  box-shadow: 0 3px 8px rgba(211, 47, 47, 0.28);
+}
+.dialog-error .btn-primary-modern:hover {
+  background: #b71c1c !important;
+}
+
+
+

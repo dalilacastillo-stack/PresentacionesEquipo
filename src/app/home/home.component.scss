@@ -1,0 +1,31 @@
+.title-text {
+    overflow: hidden;
+    /*white-space: nowrap;*/
+    text-overflow: ellipsis;
+}
+
+.single-cards {
+    margin: 20px 0;
+}
+
+.single-card .mat-card-avatar {
+    width: 50px;
+    height: 50px;
+}
+
+.single-card .mat-icon {
+    font-size: 55px;
+}
+
+.projects-card>mat-card-content {
+    max-height: 400px;
+    overflow: auto;
+}
+
+mat-card:hover {
+    background: rgba(0, 0, 0, .04);
+}
+
+.mat-card .last-child {
+    margin-bottom: 0;
+}

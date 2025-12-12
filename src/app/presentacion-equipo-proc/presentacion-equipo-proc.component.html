@@ -1,0 +1,114 @@
+<app-header></app-header>
+
+  <div class="container text-center"> 
+      <form [formGroup]="adminForm" autocomplete="off"  (ngSubmit)="generarCierre()">
+         <mat-card *ngIf="perfilUsu">
+           <div class="alert alert-light" > 
+             <mat-card-subtitle>
+               <h1> CIERRE y PROCESAMIENTO DE PROFORMAS DE EQUIPOS</h1>
+             </mat-card-subtitle>
+               <mat-card-content>           
+                  <mat-form-field >
+                  <mat-label>Fecha Cierre</mat-label>
+                  <input matInput [matDatepicker]="dp"  formControlName="fechaCierre" >
+                  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                  <mat-datepicker #dp>
+                  </mat-datepicker>
+                  </mat-form-field>
+                  <div> <!--  [disabled]="loading" -->
+                   <button mat-raised-button
+                           class="send-btn field" 
+                           type="submit" 
+                         
+                           >
+                           Generar el cierre
+                   </button>
+                 </div>
+               </mat-card-content>
+          </div>   
+         </mat-card>
+         <mat-card  *ngIf="perfilUsu">  
+            <div class="alert alert-light" > 
+           <!-- <span *ngIf="loading">
+                <i class="fa fa-spinner fa-spin"></i> Procesando...
+            </span> -->
+            <!--  [disabled]="loading" -->
+            <div><button   mat-raised-button
+                class="send-btn field"  
+                (click)="procesar()" 
+                type="button"
+                
+               > Procesar </button> </div>
+            </div>  
+         </mat-card>
+      </form>
+   </div>
+
+
+<!-- ****************** DIALOG LOADER (BLOQUEA PANTALLA) ****************** -->
+<ng-template #loaderDialog>
+  <div class="loader-container">
+    <mat-progress-spinner mode="indeterminate" diameter="60"></mat-progress-spinner>
+    <p>Procesando, por favor espere...</p>
+  </div>
+</ng-template>
+
+
+
+<!--******************DIALOG DE Confirmación consultando si se realiza el cierre de la proforma**************************-->
+
+<ng-template #confirmarCierreDialog > <!--let-data-->
+  <h2 matDialogTitle><strong>CONFIRMACIÓN DE CIERRE</strong></h2>
+  <hr style="margin-top: 0; margin-bottom: 5px;">
+     <mat-dialog-content>
+        <strong>Atención: </strong> ¿Confirma el cierre de las proformas?   <br>
+     </mat-dialog-content>
+     <mat-dialog-actions align="end">
+        <button mat-button matDialogClose>No</button>
+        <button mat-raised-button  matDialogClose="yes" >Si</button>
+     </mat-dialog-actions>
+</ng-template>
+
+<!--******************DIALOG DE confirmación de cierre EXITOSO **************************************************-->
+
+<ng-template #mensajeExitosoCierreDialog > <!--let-data-->
+  <h2 matDialogTitle><strong>CONFIRMACIÓN DEL CIERRE</strong></h2>
+  <hr style="margin-top: 0; margin-bottom: 5px;">
+     <mat-dialog-content>
+        <strong>El cierre fue realizado exitosamente!</strong>   <br>
+     </mat-dialog-content>
+     <mat-dialog-actions align="end">
+       
+        <button mat-raised-button  matDialogClose="yes" >OK</button>
+     </mat-dialog-actions>
+</ng-template>
+
+
+<!--******************DIALOG DE Confirmación consultando si confirma el PROCESAMIENTO de/los equipo/s**************************-->
+
+<ng-template #confirmarProcesarDialog > <!--let-data-->
+  <h2 matDialogTitle><strong>CONFIRMACIÓN DEL PROCESAMIENTO</strong></h2>
+  <hr style="margin-top: 0; margin-bottom: 5px;">
+     <mat-dialog-content>
+        <strong>Atención: </strong> ¿Confirma el procesamiento equipos?   <br>
+     </mat-dialog-content>
+     <mat-dialog-actions align="end">
+        <button mat-button matDialogClose>No</button>
+        <button mat-raised-button  matDialogClose="yes" >Si</button>
+     </mat-dialog-actions>
+</ng-template>
+
+<!--******************DIALOG DEL  PROCESAMIENTO**************************************************-->
+
+<ng-template #mensajeExitosoProcesarDialog > <!--let-data-->
+  <h2 matDialogTitle><strong>CONFIRMACIÓN DEL PROCESAMIENTO</strong></h2>
+  <hr style="margin-top: 0; margin-bottom: 5px;">
+     <mat-dialog-content>
+        <strong>El procesamiento fue realizado con éxito.</strong>   <br>
+     </mat-dialog-content>
+     <mat-dialog-actions align="end">
+      <button mat-raised-button  matDialogClose="yes" >OK</button>
+     </mat-dialog-actions>
+</ng-template>
+
+

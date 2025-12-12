@@ -1,0 +1,116 @@
+//@import '~@angular/material/theming';
+@import '../node_modules/@angular/material/theming';
+
+// Define a custom typography config that overrides the font-family as well as the
+// `headlines` and `body-1` levels.
+$custom-typography: mat-typography-config(
+  $font-family: 'gotham, sans-serif, monospace',
+  $headline: mat-typography-level(22px, 30px, 500),
+  $body-1: mat-typography-level(14px, 22px, 400),
+  $input: mat-typography-level(13px, 1.125, 400)
+);
+
+// Override typography CSS classes (e.g., mat-h1, mat-display-1, mat-typography, etc.).
+@include mat-base-typography($custom-typography);
+
+// Override typography for a specific Angular Material components.
+@include mat-checkbox-typography($custom-typography);
+
+// Override typography for all Angular Material, including mat-base-typography and all components.
+@include angular-material-typography($custom-typography);
+
+// Override the typography in the core CSS.
+@include mat-core($custom-typography);
+
+/* For use in src/lib/core/theming/_palette.scss */
+$mat-amp: (
+    50 : #e4e8e6,
+    100 : #bbc7c0,
+    200 : #8da196,
+    300 : #5f7b6b,
+    400 : #3d5f4c,
+    500 : #1b432c,
+    600 : #183d27,
+    700 : #143421,
+    800 : #102c1b,
+    900 : #081e10,
+    A100 : #5dff93,
+    A200 : #2aff71,
+    A400 : #00f652,
+    A700 : #00dc49,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+/* For use in src/lib/core/theming/_palette.scss */
+$mat-ame: (
+    50 : #e4e7ed,
+    100 : #bdc3d3,
+    200 : #919bb5,
+    300 : #647397,
+    400 : #435581,
+    500 : #22376b,
+    600 : #1e3163,
+    700 : #192a58,
+    800 : #14234e,
+    900 : #0c163c,
+    A100 : #758dff,
+    A200 : #4263ff,
+    A400 : #0f39ff,
+    A700 : #002bf5,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+/*
+$custom-theme-primary: mat-palette($mat-deep-orange); //$mat-blue-grey
+$custom-theme-accent: mat-palette($mat-orange, A200, A100, A400);
+$custom-theme-warn: mat-palette($mat-red);
+
+
+$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+
+
+@function mat-light-theme($primary, $accent, $warn: mat-palette($mat-red)) {
+    @return (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn,
+      is-dark: false,
+      foreground: $mat-light-theme-foreground,
+      background: $mat-light-theme-background,
+    );
+}
+
+@include angular-material-theme($custom-theme);
+*/
+
+

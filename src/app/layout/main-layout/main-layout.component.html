@@ -1,0 +1,74 @@
+<mat-sidenav-container class="main-container">
+
+  <!-- SIDENAV    -->
+  <mat-sidenav
+    #sidenav
+    class="sidenav"
+    [mode]="'side'"
+    [opened]="true"
+    [class.collapsed]="menuColapsado"
+  >
+
+    <!-- BOTÓN COLAPSAR -->
+    <div class="toggle-container">
+      <button mat-icon-button (click)="toggleMenu()">
+        <mat-icon>{{ menuColapsado ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      </button>
+    </div>
+
+    <!-- LISTA CON SUBMENÚS -->
+    <mat-accordion multi class="accordion">
+
+      <!-- SUBMENÚ DOCUMENTOS -->
+      <mat-expansion-panel [expanded]="!menuColapsado">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="icon">folder</mat-icon>
+            <span *ngIf="!menuColapsado"> Presentación de Equipos</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-nav-list>
+          <a mat-list-item routerLink="/equipos" routerLinkActive="active-link">
+            <span>Presentación Excel</span>
+          </a>
+        </mat-nav-list>
+
+         <mat-nav-list>
+          <a mat-list-item routerLink="/equipos-listado" routerLinkActive="active-link">
+            <span>Proformas presentadas</span>
+          </a>
+        </mat-nav-list>
+
+      </mat-expansion-panel>
+
+      <!-- SUBMENÚ OPERACIONES -->
+      <mat-expansion-panel [expanded]="!menuColapsado">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="icon">settings</mat-icon>
+            <span *ngIf="!menuColapsado">Administración de proformas</span>
+          </mat-panel-title>
+        
+        </mat-expansion-panel-header>
+
+        <mat-nav-list>
+          <a mat-list-item routerLink="/equipos-procesamiento" routerLinkActive="active-link">
+            <span>Cierre y Procesamiento</span>
+          </a>
+        </mat-nav-list>
+
+     </mat-expansion-panel>
+
+    </mat-accordion>
+
+  </mat-sidenav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <mat-sidenav-content class="content">
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

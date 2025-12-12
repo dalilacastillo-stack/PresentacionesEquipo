@@ -1,0 +1,318 @@
+
+<app-header></app-header>
+
+
+  <h1>PRESENTACIÓN DE PROFORMAS DE EQUIPOS</h1>
+  <div class="container text-center">
+  
+
+
+        <mat-accordion class="info-accordion">
+          <mat-expansion-panel [expanded]="showInfoCard">
+
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <span class="info-header-title">Requisitos del archivo Excel a presentar</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="info-body-check">
+
+              <div class="info-check-text">
+                <p class="instruction-check">
+                  <mat-icon>check_circle</mat-icon>
+                  El archivo debe tener tres columnas: BONO, CÓDIGO, MATRÍCULA.
+                </p>
+
+                <p class="instruction-check">
+                  <mat-icon>check_circle</mat-icon>
+                  Debe ser .xls o .xlsx.
+                </p>
+
+                <p class="instruction-check">
+                  <mat-icon>check_circle</mat-icon>
+                  Debe respetar el orden de las columnas.
+                </p>
+
+                <p class="instruction-check">
+                  <mat-icon>check_circle</mat-icon>
+                  Debe contener solo una hoja.
+                </p>
+              </div>
+
+              <div class="info-check-img">
+                <p class="img-title">Ejemplo visual:</p>
+                <img src="./assets/images/ejemploFormato2.jpg" class="example-img" />
+              </div>
+
+            </div>
+
+          </mat-expansion-panel>
+        </mat-accordion>
+
+          <div class="section-title">
+
+          </div>
+
+          <form [formGroup]="presentacionForm" autocomplete="off"  (ngSubmit)="validarYEnviar()"> 
+            <mat-card class="form-card">
+                <!-- Título de sección -->
+              <div class="section-title">
+                  
+
+                <p class="info-msg">{{ mensajeInformativo }}</p>
+              </div>
+
+              <!-- Contenedor responsive -->
+              <div class="inputs-grid">
+
+                <!--<p style="margin-top:12px;">{{ mensajeInformativo }}</p>  -->    
+
+                <!--NUMERO DE EQUIPO PARA PERFIL MEDICO-->
+                  <ng-container *ngIf="!perfilUsu">
+                <mat-form-field appearance="outline"  >
+                      <mat-label>Equipo</mat-label>
+                      <mat-select formControlName="numeroEquipo"      
+                          (selectionChange)="onEquipoSeleccionado($event)">
+                        <mat-option [value]="0"> SIN EQUIPO </mat-option>
+                        <mat-option *ngFor="let equipo of equipos" [value]="equipo.Matricula">
+                          {{ equipo.Matricula }} - {{ equipo.NombreEquipo }}
+                        </mat-option>
+                      </mat-select>
+                      <!--  <mat-error *ngIf="numeroEquipoControl?.invalid && numeroEquipoControl?.touched">
+                      El numero del equipo es obligatorio.
+                    </mat-error> -->
+                  </mat-form-field>
+                  </ng-container>
+
+
+                <!--NUMERO DE EQUIPO PARA PERFIL ADMINISTRADOR   -->
+                  <ng-container *ngIf="perfilUsu">
+                <mat-form-field appearance="outline" class="field">
+                  <mat-label>Nro. EQUIPO</mat-label>
+                  <input matInput
+                    formControlName="numeroEquipoText"
+                    maxlength="6"
+                    placeholder="Ej: 995999">
+
+                  <button *ngIf="tieneTexto"
+                      type="button"
+                      mat-icon-button
+                      matSuffix
+                      [matTooltip]="tooltipText"
+                      (click)="validarEquipo()"
+                      [@animarIcono]="estadoValidacion">
+                  <mat-icon [ngStyle]="{ 'color': colorIcono }">
+                    {{ icono }}
+                  </mat-icon>
+                  </button>
+                </mat-form-field>
+                </ng-container>
+            
+        
+              <!--CAMPO DEL PERIODO PARA PERFIL ADMINISTRADOR y MEDICO      -->          
+              <mat-form-field appearance="outline" class="field">
+                <mat-label>Periodo de prestaciones</mat-label>
+                <input matInput
+                    [matDatepicker]="dp1"
+                    [max]="maxDate"
+                    [min]="minDate"
+                    formControlName="periodo"
+                    (dateChange)="onFechaSeleccionada2()">
+                <mat-hint>MM/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                <mat-datepicker #dp1
+                              startView="multi-year"
+                              (yearSelected)="chosenYearHandlerPer($event)"
+                              (monthSelected)="chosenMonthHandlerPer($event, dp1)"
+                              panelClass="example-month-picker">
+                </mat-datepicker>
+              </mat-form-field>
+
+                    
+              <!--SELECCION DEL ARCHIVO EXCEL PARA PERFIL ADMINISTRADOR y MEDICO      -->
+                  
+
+              <div class="file-field field">
+                  <input type="file"
+                    [value]="null"
+                    #fileInput
+                    [disabled]="!presentacionForm.get('archivo')?.enabled"
+                    (change)="onArchivoSeleccionado($event)"
+                    accept=".xls,.xlsx">
+                </div> 
+
+          
+                  <div>
+                  <button 
+                      mat-raised-button
+                      class="send-btn field"
+                      [disabled]="!archivoSeleccionado || !equipoValido"
+                      type="submit"
+                      >
+                      Enviar 
+                    </button>
+                  </div>
+
+
+            </div>
+        </mat-card>
+                    
+          <div  class="alert alert-danger" role="alert"  *ngIf="errors && errors.length > 0">
+              <p >EL ARCHIVO QUE INTENTA ADJUNTAR PRESENTA ERRORES, POR FAVOR CORREGIR:</p>
+              <p   *ngFor="let error of errors"> {{error}}  </p>
+          </div>
+
+
+        <div class="grid-header">
+          Información del archivo seleccionado — 
+          <span class="count">Cantidad de registros: {{ cantidadBonos | json }}</span>
+        </div>
+
+
+          <div class="tabla-container">
+        
+            <div>
+            <table mat-table [dataSource]="dataSource" class="tabla-sheets">
+
+            <!-- Columna índice -->
+            <ng-container matColumnDef="index">
+              <th mat-header-cell *matHeaderCellDef class="mat-column-index">Nro. de Fila</th>
+                <td mat-cell *matCellDef="let row; let i = index" class="mat-column-index">
+                <!--  {{ i + 1 }}-->
+                    {{ i + 1 + (paginator.pageIndex * paginator.pageSize) }}
+                </td>
+            </ng-container>
+        
+
+            <!-- Bono -->
+            <ng-container matColumnDef="Bono">
+              <th mat-header-cell *matHeaderCellDef>Bono</th>
+                <td mat-cell *matCellDef="let row">{{ row.Bono }}</td>
+              </ng-container>
+
+            <!-- Codigo -->
+            <ng-container matColumnDef="Codigo">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let row">{{ row.Codigo }}</td>
+              </ng-container>
+
+            <!-- Matricula -->
+            <ng-container matColumnDef="Matricula">
+              <th mat-header-cell *matHeaderCellDef>Matricula</th>
+              <td mat-cell *matCellDef="let row">{{ row.Matricula }}</td>
+            </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <!-- Sin datos -->
+              <div class="sin-datos" *ngIf="!(dataSource.data.length > 0)">
+                <b> Sin registros </b>
+              </div>
+
+                  <!-- Paginador -->
+              <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+
+
+            </div>
+          
+          </div>
+
+          
+        </form>
+</div>
+
+
+<!--******************DIALOG DE Confirmación consultando si sube el archivo Excel**************************************************-->
+
+  <!--
+<ng-template #confirmarPresentacionDialog>
+  
+ Barra superior 
+  <div class="dialog-header-bar"></div>
+
+ Título + icono 
+  <h2 mat-dialog-title class="dialog-title-drive">
+    <mat-icon>info</mat-icon>
+    Confirmar presentación
+  </h2>
+
+ Contenido 
+  <mat-dialog-content class="dialog-content-drive">
+    <strong>Atención:</strong> ¿Confirma la subida del archivo?
+  </mat-dialog-content>
+
+ Footer de acciones 
+  <mat-dialog-actions class="dialog-actions-drive">
+    <button mat-button matDialogClose>No</button>
+    <button mat-raised-button matDialogClose="yes">Sí</button>
+  </mat-dialog-actions>
+
+</ng-template>
+
+
+-->
+
+<ng-template #confirmarPresentacionDialog>
+
+  <div class="dialog-confirm">
+
+    <div class="dialog-header-bar"></div>
+
+    <h2 mat-dialog-title class="dialog-title-modern">
+      <mat-icon>help_outline</mat-icon>
+      Confirmar presentación
+    </h2>
+
+    <mat-dialog-content class="dialog-content-modern">
+      <strong>Atención:</strong> ¿Confirma la subida del archivo?
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="dialog-actions-modern">
+      <button mat-button matDialogClose class="btn-cancel-modern">No</button>
+      <button mat-raised-button matDialogClose="yes" class="btn-primary-modern">Sí</button>
+    </mat-dialog-actions>
+
+  </div>
+
+</ng-template>
+
+
+<!-- ****************** DIALOG LOADER PARA ENVIO de ARCHIVO (BLOQUEA PANTALLA) ****************** -->
+<ng-template #loaderDialogEnviar>
+  <div class="loader-container">
+    <mat-progress-spinner mode="indeterminate" diameter="60"></mat-progress-spinner>
+    <p>Enviando información, por favor espere...</p>
+  </div>
+</ng-template>
+
+
+
+<!--******************DIALOG DE  subida EXITOSA del archivo Excel**************************************************-->
+
+<ng-template #mensajeExitosoDialog>
+
+  <!-- Barra superior minimalista -->
+  <div class="dialog-header-bar-success"></div>
+
+  <!-- Título + icono -->
+  <h2 mat-dialog-title class="dialog-title-modern-success">
+    <mat-icon>check_circle</mat-icon>
+    Operación exitosa
+  </h2>
+
+  <!-- Contenido -->
+  <mat-dialog-content class="dialog-content-modern">
+    <strong>El archivo Excel fue subido exitosamente.</strong>
+  </mat-dialog-content>
+
+  <!-- Footer -->
+  <mat-dialog-actions class="dialog-actions-modern-success">
+    <button mat-raised-button matDialogClose="yes" class="btn-success-modern">
+      OK
+    </button>
+  </mat-dialog-actions>
+
+</ng-template>
