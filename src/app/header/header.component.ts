@@ -60,7 +60,7 @@ export class HeaderComponent implements OnInit {
   }
   CerrarSession(){
     if(environment.production){
-      location.href = this.auth.CerrarSession();
+      this.auth.CerrarSesion();
     }else{
       localStorage.removeItem("currentUser")
       location.reload()

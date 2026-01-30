@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AutheticationService } from './servicios/authentication-service';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +12,12 @@ export class AppComponent {
    constructor(
     private auth : AutheticationService
    ){
-    this.auth.Redireccionar();
+    this.auth.Validar();
    }
   title = 'equipos_front';
   CerrarSession(){
     if(environment.production){
-      location.href = this.auth.CerrarSession();
+      this.auth.CerrarSesion();
     }else{
       localStorage.removeItem("currentUser")
       location.reload()

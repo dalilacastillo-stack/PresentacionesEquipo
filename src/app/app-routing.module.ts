@@ -35,6 +35,7 @@ import { PresentacionEquipoProcComponent } from './presentacion-equipo-proc/pres
 import { PresentacionEquipoRechazosComponent } from './presentacion-equipo-rechazos/presentacion-equipo-rechazos.component';
 import { PresentacionEquipoDetalleRechazosComponent } from './presentacion-equipo-detalle-rechazos/presentacion-equipo-detalle-rechazos.component';
 import { PresentacionEquipoProcFinalComponent } from './presentacion-equipo-proc-final/presentacion-equipo-proc-final.component';
+import { LayoutModule } from '@angular/cdk/layout';
 
 /*const routes: Routes = [
   { path  : '', pathMatch: 'full'             , redirectTo: 'home'                        },//Por defecto redirecciona a el home
@@ -57,6 +58,7 @@ const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    //Claro pero tu home o no tiene?  cual seria el home, el index digamos?
     children: [
       { path: 'equipos-listado', component: PresentacionEquipoListadoComponent },
       { path: 'equipos', component: PresentacionEquipoComponent },
@@ -64,7 +66,12 @@ const routes: Routes = [
       { path: 'equipos-procFinal', component: PresentacionEquipoProcFinalComponent },
       { path: 'equipos-rechazos', component: PresentacionEquipoRechazosComponent },
       { path: 'detalle-rechazos/:id', component: PresentacionEquipoDetalleRechazosComponent  },
-      { path: '', redirectTo: 'equipos-listado', pathMatch: 'full' }
+      //{ path: '', redirectTo: 'equipos-listado', pathMatch: 'full' }
+
+      //SERIA ALGO COMO ESTO LO QUE TE FALTA PERO LA PAGE SERIA LA QUE VE AL INICIAR
+       //BUENO LA PAgina de incio estaria en ese componente main-Layout
+      { path  : '', pathMatch: 'full'             , redirectTo: 'home',                    },//Por defecto redirecciona a el home
+      { path  : 'home'                            , component : HomeComponent   }
     ]
   }
 ];

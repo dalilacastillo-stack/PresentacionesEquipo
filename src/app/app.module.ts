@@ -20,9 +20,10 @@ import { PresentacionEquipoProcComponent } from './presentacion-equipo-proc/pres
 import { PresentacionEquipoRechazosComponent } from './presentacion-equipo-rechazos/presentacion-equipo-rechazos.component';
 import { PresentacionEquipoDetalleRechazosComponent } from './presentacion-equipo-detalle-rechazos/presentacion-equipo-detalle-rechazos.component';
 import { PresentacionEquipoProcFinalComponent } from './presentacion-equipo-proc-final/presentacion-equipo-proc-final.component';
-
+import { NavbarComponent } from './layout/navbar/navbar.component';
+import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
 registerLocaleData(localeEsAr, 'es-Ar');
-
+//Ahora lo vemos
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +35,8 @@ registerLocaleData(localeEsAr, 'es-Ar');
     PresentacionEquipoProcComponent,
     PresentacionEquipoRechazosComponent,
     PresentacionEquipoDetalleRechazosComponent,
-    PresentacionEquipoProcFinalComponent
+    PresentacionEquipoProcFinalComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +45,8 @@ registerLocaleData(localeEsAr, 'es-Ar');
     HttpClientModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbDropdownModule
   ],
   providers: [
     AutheticationService,

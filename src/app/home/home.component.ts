@@ -13,6 +13,6 @@ export class HomeComponent {
 
 
   CerrarSession(){
-    location.href = this.auth.CerrarSession();
+     this.auth.CerrarSesion();
   }
 }

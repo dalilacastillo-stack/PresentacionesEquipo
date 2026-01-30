@@ -1,0 +1,31 @@
+<nav class="navbar  justify-content-end me-3">
+      <div ngbDropdown class="d-inline-block">
+          <button class="badge d-flex align-items-center p-1 pe-2 text-white bg-primary bg-opacity-75 border rounded-pill mt-3" id="dropdownBasic1" ngbDropdownToggle>
+            <img class="rounded-circle me-1" 
+                 width="24" 
+                 height="24" 
+                 src="https://sistemas.amepla.org.ar/cdn/img//user.jpg" alt="Imagen de perfil" *ngIf="usuario!=null"> 
+            <span class="d-none d-sm-block">
+                {{usuario.Nombre}}
+            </span>
+          </button>
+          
+          <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                <li *ngIf="!produccion">
+                    <button type="button" class="dropdown-item" tabindex="0" (click)="CambiarPerfil('Administrador')">
+                        <i class="bi bi-person" aria-hidden="true"></i> Administrador
+                    </button>
+                </li>
+                <li *ngIf="!produccion">
+                    <button type="button" class="dropdown-item" tabindex="0" (click)="CambiarPerfil('medico')" >
+                        <i class="bi bi-person" aria-hidden="true"></i> Medico
+                    </button>
+                </li>
+                <li *ngIf="!produccion">
+                    <button type="button" class="dropdown-item" tabindex="0" (click)="CambiarPerfil('equipo')" ><!----> 
+                        <i class="bi bi-person" aria-hidden="true"></i> Equipo
+                    </button>
+                </li>
+          </ul>
+      </div>
+  </nav>

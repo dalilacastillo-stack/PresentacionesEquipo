@@ -185,11 +185,13 @@ animations: [
     numEquipo:number = -1;
     periodoTexto!: string;
     cantidadRegistros:number =0;
-
+    
     usuario   = JSON.parse(localStorage.getItem("currentUser"))
     matricula = this.usuario.usuario;
     idPerfil  =  this.usuario.Sistemas.filter(d => d.Id==environment.idSistema)[0].IdPerfil
   
+
+
     perfilUsu = (this.idPerfil == 1);
 
     presentacionForm: FormGroup;
@@ -254,21 +256,22 @@ dialogData!: {
     }
 
    ngOnInit() {  
+    console.log("usuarioo ",this.usuario);
 
     console.log("PERFIL ACTUAL",this.idPerfil);
     console.log(this.perfilUsu);
     //valida si es un equipo
-    const esEquipo = /^[0-9]{6}$/.test(this.matricula.trim()) && this.matricula.trim().startsWith("995");
+    //const esEquipo = /^[0-9]{6}$/.test(this.matricula.trim()) && this.matricula.trim().startsWith("995");
 
-    if ((this.idPerfil == 3 ) && (esEquipo == true)) {
+   // if ((this.idPerfil == 3 ) && (esEquipo == true)) {
     //  this.equipos =  //getInfoEquipo   
      this.getInfoEquipo();
 
             
-    }else{ 
+   /* }else{ 
       this.getEquipos() ;
     }
-  
+  */
 /*
   nombre: ['', Validators.required],
       fechaNacimiento: [{ value: '', disabled: true }, Validators.required],
