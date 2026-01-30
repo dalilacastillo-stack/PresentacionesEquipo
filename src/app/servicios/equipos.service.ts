@@ -208,6 +208,19 @@ guardar(json : any) {
 }
 
 
+listadoProformasACerrar(matricula:any, idPerfil:Number) {
+    console.log("usuariosesion --->",matricula);
+  return this.http.get(`${this.apiUrl}equipo-listado/listadoProformasACerrar/${matricula}/${idPerfil}`)
+
+}
+
+
+listadoProformasAProcesar(matricula:any, idPerfil:Number) {
+    console.log("usuariosesion --->",matricula);
+  return this.http.get(`${this.apiUrl}equipo-listado/listadoProformasAProcesar/${matricula}/${idPerfil}`)
+
+}
+
   ejecutarEliminacionArchivo(archivoJson:any) {
   //ejecutarEliminacionArchivo(archivoJson:any): Observable<any[]> {
     // var usu = JSON.parse(localStorage.getItem('currentUser'))
@@ -288,6 +301,13 @@ guardar(json : any) {
   });
 }
 
+  obtenerExcelBonosRechazados(jsonRechazo) { 
+   return this.http.post(`${this.apiUrl}equipo-listado/detalle-rechazos/obtenerExcelBonosRechazados`,jsonRechazo,{ 
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  });
+}
+
+
 
 obtenerLotes(jpendiente){
 
@@ -325,5 +345,21 @@ actualizarArchivo(jInfo){
     );*/     
  //}
  
+
+
+  getProformasRechazadas(matricula:any, idPerfil:Number) {
+    console.log("usuariosesion --->",matricula);
+  return this.http.get(`${this.apiUrl}equipo-listado/getProformasRechazadas/${matricula}/${idPerfil}`)
+
+}
+
+getDetalleRechazos(idPres:Number,matricula:any, idPerfil:Number) {
+    console.log("usuariosesion --->",matricula);
+  return this.http.get(`${this.apiUrl}equipo-listado/detalle-rechazos/getDetalleRechazos/${idPres}/${matricula}/${idPerfil}`)
+
+}
+
+
+
 
 }

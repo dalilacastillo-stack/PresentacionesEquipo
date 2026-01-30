@@ -1,0 +1,112 @@
+
+
+
+<app-header></app-header>
+<div class="container text-center">
+
+    <mat-card  style="width: 100%; text-align: center; text-align: -webkit-center;"  >
+
+    <mat-card-title>
+       
+        <div class="card-title-row">
+
+    <!-- Botón volver -->
+    <button
+      mat-icon-button
+      (click)="volver()"
+      aria-label="Volver">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <!-- Título -->
+    <h1 class="card-title-text">BONOS RECHAZADOS</h1>
+
+  </div>
+    
+    </mat-card-title>
+    <mat-card-content>
+
+     <mat-card class="info-presentacion" *ngIf="resumenPresentacion">
+
+     <div class="info-grid">
+
+          <div><b>Nro. de Presentación:</b> {{ resumenPresentacion.nroPresentacion }}</div>
+          <div><b>Presentación:</b> {{ resumenPresentacion.nombrePresentacion }}</div>
+          <div><b>Equipo:</b> {{ resumenPresentacion.equipo }}</div>
+          <div><b>Periodo:</b> {{ resumenPresentacion.periodo }}</div>
+          <div><b>Cantidad de Bonos:</b> {{ resumenPresentacion.cantidadBonos }}</div>
+          <div><b>Fecha de Carga:</b> {{ resumenPresentacion.fechaCarga | date:'dd-MM-yyyy' }}</div>
+         <div><b>Usuario de Carga:</b> {{ resumenPresentacion.usuarioCarga }}</div>
+         <div class="info-header">
+    <span class="info-title">Descargar Excel </span>
+
+    <!-- Botón descargar -->
+    <button
+      mat-icon-button
+      color="primary"
+      matTooltip="Descargar Excel"
+      (click)="verExcelRechazos(
+        resumenPresentacion.nroPresentacion,
+        resumenPresentacion.nombrePresentacion + '_' + resumenPresentacion.equipo,
+        resumenPresentacion.equipo,
+        2,
+        resumenPresentacion.periodo
+      )">
+      <mat-icon>download</mat-icon>
+    </button>
+  </div>
+
+
+        </div>
+
+    </mat-card>
+
+  <div class="tabla-container">
+
+   <table mat-table [dataSource]="dataSourceDetalle" class="tabla-sheets">
+
+ 
+      <!-- Columna Bono -->
+    <ng-container matColumnDef="Bono">
+      <th mat-header-cell *matHeaderCellDef> Bono </th>
+      <td mat-cell *matCellDef="let element"> {{element.nrobono}} </td>
+    </ng-container>
+
+        <!-- Columna Código -->
+     <ng-container matColumnDef="Codigo">
+      <th mat-header-cell *matHeaderCellDef> Código </th>
+      <td mat-cell *matCellDef="let element"> {{element.codigo}} </td>
+    </ng-container>
+
+
+          <!-- Columna Código -->
+     <ng-container matColumnDef="Matricula">
+      <th mat-header-cell *matHeaderCellDef> Matrícula </th>
+      <td mat-cell *matCellDef="let element"> {{element.matricula}} </td>
+    </ng-container>
+
+
+   <!-- Columna Motivo del Rechazo -->
+    <ng-container matColumnDef="motivoRechazo">
+      <th mat-header-cell *matHeaderCellDef> Motivo del Rechazo </th>
+      <td mat-cell *matCellDef="let element"> {{element.motivoRechazo}} </td>
+    </ng-container>
+      
+
+    <!-- Filas -->
+    <tr mat-header-row *matHeaderRowDef="displayedCol"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedCol"></tr>
+   </table>
+
+    <!-- Sin datos -->
+   <div class="sin-datos" *ngIf="!(dataSourceDetalle.data.length > 0)">
+    <b>No se registran presentaciones rechazadas</b>
+   </div>
+
+   <!-- Paginador -->
+   <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+  </div>
+
+
+
+  

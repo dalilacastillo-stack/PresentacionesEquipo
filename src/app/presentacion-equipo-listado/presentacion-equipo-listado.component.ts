@@ -38,7 +38,7 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
 
   filterForm:FormGroup;
   user:any;
-  displayedColumns: string[] = [ 'NombrePresentacion', 'Equipo', 'Periodo', 'Cantidad','FechaCarga', 'Usuario', 'Estado', 'Acciones' ];
+  displayedColumns: string[] = [ 'NroPres','NombrePresentacion', 'Equipo', 'Periodo', 'Cantidad','FechaCarga', 'Usuario', 'Estado', 'BonosAceptados', 'BonosRechazados', 'Acciones' ];
   dataSource : any = new MatTableDataSource();//new MatTableDataSource<listaProf>(); --this.listaProf
  //dataSource = new MatTableDataSource<any>([]);
   lotesArray: string[];
@@ -80,23 +80,11 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
     let matricula= this.user.usuario;
     console.log("MATRICULA DE SESSION",matricula);
     //this.isLoading = true;
-    let dataTable: any[] = [];
+    //let dataTable: any[] = [];
     this.dataSource.data = []; 
     this.dataSource._updateChangeSubscription();
     
-     // let desde = this.filterFormLotes.get('fechaDesde').value;
-     // let hasta = this.filterFormLotes.get('fechaHasta').value;
-     //console.log("desde"+ desde+ "Hasta"+ hasta + "matricula:" + matricula );
-     //if (!this.filterForm.valid) {  
-       // this.isLoading = false; 4
-    //    return;
-     // }
-    
-     /* if (!desde || !hasta || !matricula) {
-        this.isLoading = false;
-        return;
-      }
-    */
+   
      // this.service.getLotes(matricula, moment(desde).format('DD/MM/YYYY'), moment(hasta).format('DD/MM/YYYY')).subscribe(
       var sistema = this.user.Sistemas.filter(d => d.Id==environment.idSistema);
       console.log(sistema[0])

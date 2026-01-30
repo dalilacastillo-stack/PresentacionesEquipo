@@ -2,12 +2,20 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators ,} from '@angular/forms';
 import * as moment from 'moment';
+
+//import 'moment/locale/es';
+//import 'moment/locale/en-gb';
 import {Moment} from 'moment';
+moment.locale('es');
+
 import * as XLSX from 'xlsx';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
 //import { MatDialog } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
+
+
+
 import { EquiposService } from '../servicios/equipos.service';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 //import { MatSnackBar } from '@angular/material/snack-bar';
@@ -18,6 +26,30 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSelectChange } from '@angular/material/select';
 import { MatPaginator } from '@angular/material/paginator';
+
+/*
+export interface MensajeExitoData {
+  ID: number;
+  Equipo: number;
+  Periodo: string;
+  cantidad: number;
+}
+*/
+
+
+
+interface ExcelRow {
+  Bono: any;
+  Codigo: any;
+  Matricula: any;
+  _errors?: {
+    Bono?: boolean;
+    Codigo?: boolean;
+    Matricula?: boolean;
+  };
+}
+
+
 
 
 declare var $:any;
@@ -110,33 +142,10 @@ animations: [
   
     export class PresentacionEquipoComponent implements OnInit {
 
-    //--  archivoCargado: File | null = null;
-    //--  fileError: string | null = null;
 
-    /*  selectedValue!: number;
-      numericOptions = [
-        { value: 995449, viewValue: '- A' },
-        { value: 995082, viewValue: '- B' },
-        { value: 995170, viewValue: '- C' },
-        { value: 995213, viewValue: '- D' },
-        { value: 995452, viewValue: '- E' },
       
-      ];*/
 
-     /* numericOptions = [
-        { Matricula: 995449, NombreEquipo: 'A' },
-        { Matricula: 995082, NombreEquipo: 'B' },
-        { Matricula: 995170, NombreEquipo: 'C' },
-        { Matricula: 995213, NombreEquipo: 'D' },
-        { Matricula: 995328, NombreEquipo: 'E' },
-        { Matricula: 995452, NombreEquipo: 'F' },
-        { Matricula: 995167, NombreEquipo: 'G' },
-        { Matricula: 995102, NombreEquipo: 'G' },
-        ];
-*/
-
-
-
+   
 
     showInfoCard = true;
 
@@ -174,6 +183,8 @@ animations: [
 //**************************************************************** */
 
     numEquipo:number = -1;
+    periodoTexto!: string;
+    cantidadRegistros:number =0;
 
     usuario   = JSON.parse(localStorage.getItem("currentUser"))
     matricula = this.usuario.usuario;
@@ -183,7 +194,8 @@ animations: [
 
     presentacionForm: FormGroup;
 
-    excelData: any[] = [];
+    //excelData: any[] = [];
+    excelData: ExcelRow[] = [];
 
      cantidadBonos: number;
      errors: any[] = [];
@@ -196,6 +208,8 @@ animations: [
    
      //equipos: any;
      equipos:any[]  = [];
+     filasConError: Set<number> = new Set();
+     totalErroresExcel = 0;
 
      //*******************Corresponde con la grilla***************
     // displayedColumns: string[] = ['numero','bono', 'codigo', 'matricula'];
@@ -207,18 +221,31 @@ animations: [
      
      equipoValido= false;
      archivoSeleccionado : File | null = null;
+     nombreArchivo: string | null = null;
+
      mensajeInformativo= "";
 
+dialogData!: {
+  ID: number;
+  Equipo:number;
+  Periodo: string;
+  cantidad: number;
+};
+
+
+
      @ViewChild('loaderDialogEnviar') loaderDialogEnviar: TemplateRef<any>;
-     @ViewChild('fileInput') fileInput!: ElementRef;
+     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;    
      @ViewChild('confirmarPresentacionDialog') confirmarPresentacionDialog: TemplateRef<any>;
      @ViewChild('mensajeExitosoDialog') mensajeExitosoDialog: TemplateRef<any>;
      @ViewChild(MatPaginator) paginator!: MatPaginator;
+     
 
           
     constructor(private service: EquiposService,
                 private formBuilder : FormBuilder,
                 public dialog: MatDialog, 
+              
              //   private _snackBar: MatSnackBar,
                 private cdr: ChangeDetectorRef
                 ) { 
@@ -332,11 +359,6 @@ getInfoEquipo(){
  }
 
 
-  // Getter para acceder fácilmente a los controles del formulario en la plantilla HTML
- /* get numeroEquipoControl() { return this.presentacionForm.get('numeroEquipo'); }
-  get numeroControl() { return this.presentacionForm.get('numeroEquipoText');  }
-  get periodoControl() { return this.presentacionForm.get('periodo');  }
-  */
 
 
  soloNumeros(event: KeyboardEvent) {
@@ -385,11 +407,7 @@ getInfoEquipo(){
 
 
 //*************************************Corresponde con la grilla************************************************************/
-/*
-volver(): void {
-  window.history.back();
-}
-*/
+
 validarYEnviar() {// cambiar el enviar y llamar al Confirmar
     let fecha= this.presentacionForm.controls.periodo.value;
     /*----------quitar para cuando se implemente el tema del perfil---------------------*/
@@ -437,13 +455,20 @@ validarYEnviar() {// cambiar el enviar y llamar al Confirmar
     const file = event.target.files[0];
     if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
        this.archivoSeleccionado = file;
-      
+       this.nombreArchivo = file.name;
+       this.presentacionForm.get('archivo')?.reset();
+       this.errors = []; //limpio lista de errores...
+       this.excelData = null; //limpio grilla
+       this.dataSource.data = [];
+       this.cantidadBonos = 0;   
+
        this.LeerExcel(event)
        this.cdr.detectChanges();
        //para actualizar nuevamente el archivo subido
-      // this.fileInput.nativeElement.value = null;
+       this.fileInput.nativeElement.value = null;
     } else {
       this.archivoSeleccionado = null;
+      this.nombreArchivo = null;
     //  this.mensajeInformativo = '❌ Solo archivos Excel (.xlsx/.xls).';
     }
   }
@@ -506,7 +531,7 @@ if (valorSeleccionado !== 0) {
        this.presentacionForm.reset();
         this.archivoSeleccionado = null;
         this.dataSource.data= []; 
-        // 🔥 Limpia el input y quita el nombre del archivo
+        // Limpia el input y quita el nombre del archivo
         this.fileInput.nativeElement.value = null;
         this.excelData = null; //limpio grilla
         this.cantidadBonos = 0;
@@ -550,10 +575,36 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
 
     
     guardarInformacion(){
+
+    /*----------quitar para cuando se implemente el tema del perfil---------------------*/
+           if(this.idPerfil == 1) {
+                 this.numEquipo = this.presentacionForm.controls.numeroEquipoText.value;
+                }else {
+                  this.numEquipo = this.presentacionForm.controls.numeroEquipo.value
+                }
+    /*---------------------------------------------------------------------------------*/
+ 
+ // Obtener periodo 
+ // const periodoMoment = this.presentacionForm.controls.periodo.value;
+
+
+  // Ej: "Marzo 2026"
+ // this.periodoTexto = periodoMoment.format('MMMM YYYY');
+
+
+  const periodoMoment = this.presentacionForm.controls.periodo.value;
+ 
+  this.periodoTexto = periodoMoment.locale('es').format('MMMM YYYY').replace(/^./, c => c.toUpperCase());
+
+  this.cantidadRegistros = this.cantidadBonos;
+
+       console.log("Equipo:" + this.numEquipo);
+       console.log("periodo:" + this.periodoTexto);
+       console.log("cantidadBonos:" + this.cantidadBonos);
+
         const dialogRef =  this.dialog.open(this.confirmarPresentacionDialog, {
         disableClose: true,
-        autoFocus: true //,
-        // data: element
+        autoFocus: true 
         });
         
         dialogRef.afterClosed().subscribe(result => {
@@ -564,12 +615,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                         disableClose: true,
                         panelClass: 'no-padding-dialog'
                          });
-                         /*----------quitar para cuando se implemente el tema del perfil---------------------*/
-                          if(this.idPerfil == 1) {
-                                this.numEquipo = this.presentacionForm.controls.numeroEquipoText.value;
-                             }else {this.numEquipo = this.presentacionForm.controls.numeroEquipo.value}
-                          /*---------------------------------------------------------------------------------*/
-                          /* console.log("resultado Excel 2---->:" + JSON.stringify(this.excelData));*/
+                           /* console.log("resultado Excel 2---->:" + JSON.stringify(this.excelData));*/
                            var json : any = {
                                        id : 0,
                                        idEstado: 1,
@@ -611,6 +657,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                                       }
                              });
                  }else{  
+
                          this.presentacionForm.reset();
                          this.presentacionForm.get('periodo')?.disable();
                          this.presentacionForm.get('archivo')?.disable();
@@ -618,6 +665,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                          this.mensajeInformativo = '';
                          // Limpia tu variable también
                          this.archivoSeleccionado = null;
+                         this.nombreArchivo = null;
                           //  Limpia el input y quita el nombre del archivo
                          this.fileInput.nativeElement.value = null;
                          this.excelData = null; //limpio grilla
@@ -629,7 +677,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
      }
 
 
-
+/*
     mostrarMensajeExito(resp ){
         const dialogRef =  this.dialog.open(this.mensajeExitosoDialog, {
         disableClose: true,
@@ -638,41 +686,110 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
       });
     }
 
-  
+
+*/
+
+
+
+mostrarMensajeExito(resp: any) {
+
+ /* const dialogRef = this.dialog.open(this.mensajeExitosoDialog, {
+    disableClose: true,
+    autoFocus: true,
+    data: {
+      ID: resp.ID,
+      Equipo: resp.Equipo,
+      Periodo: this.periodoTexto,     // texto ya formateado
+      cantidad: resp.cantidad
+    }
+  });
+*/
+
+ this.dialogData = {
+    ID: resp.ID,
+    Equipo: resp.Equipo,
+    Periodo: this.periodoTexto,
+    cantidad: resp.cantidad
+  };
+
+  this.dialog.open(this.mensajeExitosoDialog, {
+    disableClose: true,
+    autoFocus: true
+  });
+
+
+}
+
+
+
+    
  
     LeerExcel(event: any) {  
-       this.errors = []; //limpio lista de errores...
-       this.excelData = null; //limpio grilla
-       this.dataSource.data = [];
-       this.cantidadBonos = 0;
+       
        let file = event.target.files[0];
+
       if (file !== undefined){
            const fileReader = new FileReader();
            fileReader.readAsArrayBuffer(file);
            fileReader.onload = (e) => {
+
+
+                 // LIMPIO ESTADO PREVIO
+                 this.errors = [];
+                 this.filasConError.clear();
+                 this.totalErroresExcel = 0;
+
                  const data = new Uint8Array(fileReader.result as ArrayBuffer);
                  const workbook = XLSX.read(data, { type: 'array' });
                  const sheetName = workbook.SheetNames[0];
                  const worksheet = workbook.Sheets[sheetName];
                  console.log("worksheet-->" + JSON.stringify(worksheet));
-                 // console.log("worksheet2", worksheet);
-                 // this.validateMissingHeaders(worksheet);
                   const headers = ['Bono', 'Codigo', 'Matricula'];
+
+                 //VALIDAR CANTIDAD DE COLUMNAS
                   if (!this.isValidCantidadDeColumnas(worksheet, headers)){
                           this.archivoSeleccionado = null;
                           console.log("isValidCantidadDeColumnas");
                           this.cdr.detectChanges();
                           return ;
                      }
+
+                    // CONVERTIR EXCEL A JSON
                   this.excelData = XLSX.utils.sheet_to_json(worksheet, { header: headers });
                   this.cantidadBonos = (this.excelData.length) - 1;
                     // this.excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName[0]]);
                    // console.log("resultado Json antes:" + JSON.stringify(this.excelData));
                    //console.log('primer elemento',this.excelData[0]);
-                  this.excelData.splice(0, 1);//elimina el header para mostrarlo en tabla html
+
+                  // ElIMINO FILA DE ENCABEZADO
+                   this.excelData.splice(0, 1);
+
+                    // INICIALIZO FLAGS DE ERROR POR CELDA
+                  this.excelData = this.excelData.map(row => ({
+                        ...row,
+                        _errors: {}
+                        }));
+                  //CARGO LA TABLA
                   this.dataSource.data = this.excelData;
                   this.dataSource.paginator = this.paginator;   // Asigno el paginator si no se hizo antes
                   this.paginator.firstPage();   // Reseteo a la primera página
+
+   
+                    //  VALIDACIONES DEL CONTENIDO DEL ARCHIVO (TODAS)
+                  const okCantidad = this.validarCantidadRegistros(this.excelData);
+                  const okLongitud = this.validarLongitudDatos(this.excelData);
+                  const okTipo = this.validarTipoDeDatos(this.excelData);
+
+                  // SI HAY ERRORES → PROCESO Y CORTO
+                  if (!okCantidad || !okLongitud || !okTipo) {
+                    this.procesarErroresExcel();
+                    this.archivoSeleccionado = null;
+                    this.cdr.detectChanges();
+                    return;
+                  }
+
+/*
+
                   if(!this.validarCantidadRegistros(this.excelData)){     
                         this.archivoSeleccionado = null;
                         this.cdr.detectChanges();
@@ -687,12 +804,19 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                       this.archivoSeleccionado = null;
                       this.cdr.detectChanges();
                        return ;
-                    }
-                 console.log("datos del archivo excell--->",this.excelData);
+                    }*/
+                // console.log("datos del archivo excell--->",this.excelData);
+
+               // TODO OK → ACEPTO ARCHIVO
                  this.presentacionForm.get('archivo')?.setValue(file);
+                  this.fileInput.nativeElement.value = '';
                  this.cdr.detectChanges();
                 }
-           }else{ 
+         
+         
+         
+         
+              }else{ 
             }
   }
 
@@ -711,7 +835,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
       if (data) {
         const hData = data[0]; //header del excel cargado
         if (hData && (headers.length !== (hData as Array<any>).length)) {
-          const msj = "La cantidad de columnas del excel cargado no coincide con lo establecido. Por favor, revise los datos.";
+          const msj = "La cantidad de columnas del excel cargado no coincide con lo establecido. ";
           this.errors.push(msj);
          // this.mensajeInformativo = "La cantidad de columnas del archivo seleccionado no tiene 3 columnas. Por favor, revise los datos.";
           return false;
@@ -721,75 +845,262 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
      return false;
     }
 
-    validarLongitudDatos(excelData: any): any {
-      let respuesta = true;
-      let nroFila = 0
-      for (let i = 0; i < excelData.length; i++) {
-        //console.log('BONO a validar:',excelData[i].Bono);
-         console.log('BONO longitud:',JSON.stringify(excelData[i].Bono).length);
-             console.log('CODIGO longitud:',JSON.stringify(excelData[i].Codigo).length);
-                 console.log('MATRICULA longitud:',JSON.stringify(excelData[i].Matricula).length)
-         if (((JSON.stringify(excelData[i].Bono).length) < 17) && // observar que si tienen letras la longitud son 2 caracteres mas
-            ((JSON.stringify(excelData[i].Codigo).length) < 9) &&
-            ((JSON.stringify(excelData[i].Matricula).length) < 9)) //&&
-         //   ((JSON.stringify(excelData[i].Equipo).length) < 7)) 
-            {
-              /*  console.log('BONO longitud:',JSON.stringify(excelData[i].Bono).length);
-                 console.log('CODIGO longitud:',JSON.stringify(excelData[i].Codigo).length);
-                 console.log('MATRICULA longitud:',JSON.stringify(excelData[i].Matricula).length)*/
-           // console.log('Respuesta Verdadera', respuesta);
-          //  this.desbloquear();
-          } else {
-            respuesta = false;
-            //console.log('Respuesta Falsa', respuesta);
-            nroFila = i+1;
-            const msj = "Error en la longitud de los datos ingresados en la fila " + nroFila + ".";
-             // this.mensajeInformativo = "Error en la longitud de los datos ingresados en la fila " + nroFila + ". Por favor, revise los datos.";
-             this.errors.push(msj);
-             return respuesta;
-             break;
-          }
-       }
-       return respuesta;
+
+    
+
+/*
+validarLongitudDatos(excelData: any): boolean {
+  let respuesta = true;
+
+  for (let i = 0; i < excelData.length; i++) {
+
+    const bonoLen = JSON.stringify(excelData[i].Bono).length;
+    const codigoLen = JSON.stringify(excelData[i].Codigo).length;
+    const matriculaLen = JSON.stringify(excelData[i].Matricula).length;
+
+    if (bonoLen >= 17) {
+      excelData[i]._errors.Bono = true;
+      respuesta = false;
     }
 
-     validarTipoDeDatos(excelData: any): any {
-      let respuesta = true;
-      let nroFila = 0;
-      for (let i = 0; i < excelData.length; i++) {
-         if ((typeof (excelData[i].Matricula) === "number")
-       //  && (typeof (excelData[i].Equipo) === "number")
-        )
-         {
-          //  console.log('Verdadero', i);
-         //   this.desbloquear()
-         } else {
-          //  console.log('Falso', i);
-          nroFila = i+1;
-            const msj = "Error en los tipos de datos ingresados en la fila " + nroFila + ".";
-            this.errors.push(msj);
-           //  this.mensajeInformativo = "Error en los tipos de datos ingresados en la fila " + nroFila + ". Por favor, revise los datos.";
-            return respuesta = false;
-            break;
-         }
-       }
-      return respuesta;
-     }
- 
+    if (codigoLen >= 9) {
+      excelData[i]._errors.Codigo = true;
+      respuesta = false;
+    }
 
-//usado
-/*
-  setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>) {
-   if ( this.presentacionForm.controls.periodo.value != null) {
-      const ctrlValue = this.presentacionForm.controls.periodo.value ?? moment();
-    ctrlValue.month(normalizedMonthAndYear.month());
-    ctrlValue.year(normalizedMonthAndYear.year());
-    this.presentacionForm.controls.periodo.setValue(ctrlValue);
-    datepicker.close();
+    if (matriculaLen >= 9) {
+      excelData[i]._errors.Matricula = true;
+      respuesta = false;
+    }
+
+    if (!respuesta) {
+      const nroFila = i + 1;
+      this.errors.push(
+        `Error en la longitud de los datos ingresados en la fila ${nroFila}. `
+      );
+      return false;
     }
   }
 
+  return true;
+}*/
+
+/*
+validarLongitudDatos(excelData: any[]): boolean {
+  let hayErrores = false;
+
+  for (let i = 0; i < excelData.length; i++) {
+
+    const bonoLen = JSON.stringify(excelData[i].Bono).length;
+    const codigoLen = JSON.stringify(excelData[i].Codigo).length;
+    const matriculaLen = JSON.stringify(excelData[i].Matricula).length;
+
+    if (bonoLen >= 17) {
+      excelData[i]._errors.Bono = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+    }
+
+    if (codigoLen >= 9) {
+      excelData[i]._errors.Codigo = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+    }
+
+    if (matriculaLen >= 9) {
+      excelData[i]._errors.Matricula = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+    }
+  }
+
+  return !hayErrores;
+}
+
 */
+/*
+validarLongitudDatos(excelData: any[]): boolean {
+  let hayErrores = false;
+
+  for (let i = 0; i < excelData.length; i++) {
+
+    const bonoLen = JSON.stringify(excelData[i].Bono).length;
+    const codigoLen = JSON.stringify(excelData[i].Codigo).length;
+    const matriculaLen = JSON.stringify(excelData[i].Matricula).length;
+
+    if (bonoLen >= 17) {
+      excelData[i]._errors.Bono = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+      this.totalErroresExcel++;   // 👈 NUEVO
+    }
+
+   if (codigoLen >= 7) {
+      excelData[i]._errors.Codigo = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+      this.totalErroresExcel++;   // 👈 NUEVO
+    }
+
+    if (matriculaLen >= 7) {
+      excelData[i]._errors.Matricula = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+      this.totalErroresExcel++;   // 👈 NUEVO
+    }
+  }
+
+  return !hayErrores;
+}*/
+
+
+
+validarLongitudDatos(excelData: any[]): boolean { 
+  let hayErrores = false;
+
+  for (let i = 0; i < excelData.length; i++) {
+
+    // ===== LONGITUDES QUE SE MANTIENEN =====
+    const bonoLen = JSON.stringify(excelData[i].Bono).length;
+    const matriculaLen = JSON.stringify(excelData[i].Matricula).length;
+
+    // ===== VALIDACIÓN BONO (SIN CAMBIOS) =====
+    if (bonoLen >= 17) {
+      excelData[i]._errors.Bono = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+      this.totalErroresExcel++;
+    }
+
+    // =================================================
+    // ===== NUEVA VALIDACIÓN DE CÓDIGO (VA ACÁ) =====
+    // =================================================
+
+    const codigo = excelData[i].Codigo?.toString().trim().toUpperCase();
+
+    const soloNumeros = /^[0-9]{6}$/;
+    const alfaNum1 = /^[A-Z]{2}[0-9]{4}$/;        // MS0012
+    const alfaNum2 = /^[0-9]{2}[A-Z]{2}[0-9]{2}$/; // 12AB00
+
+    const codigoValido =
+      soloNumeros.test(codigo) ||
+      alfaNum1.test(codigo) ||
+      alfaNum2.test(codigo);
+
+    if (!codigoValido) {
+      excelData[i]._errors.Codigo = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+      this.totalErroresExcel++;
+    }
+
+    // ===== VALIDACIÓN MATRÍCULA (SIN CAMBIOS) =====
+    if (matriculaLen >= 7) {
+      excelData[i]._errors.Matricula = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+      this.totalErroresExcel++;
+    }
+  }
+
+  return !hayErrores;
+}
+
+
+
+
+
+
+/*
+
+validarTipoDeDatos(excelData: any): boolean {
+  let respuesta = true;
+
+  for (let i = 0; i < excelData.length; i++) {
+
+    if (typeof excelData[i].Matricula !== 'number') {
+      excelData[i]._errors.Matricula = true;
+
+      const nroFila = i + 1;
+      this.errors.push(
+        `Error en los tipos de datos ingresados en la fila ${nroFila}. No es una matrícula válida: ${excelData[i].Matricula}.`
+      );
+
+      return false;
+    }
+  }
+
+  return true;
+}
+ */
+/*
+validarTipoDeDatos(excelData: any[]): boolean {
+  let hayErrores = false;
+
+  for (let i = 0; i < excelData.length; i++) {
+
+    if (typeof excelData[i].Matricula !== 'number') {
+      excelData[i]._errors.Matricula = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+    }
+  }
+
+  return !hayErrores;
+}*/
+
+
+validarTipoDeDatos(excelData: any[]): boolean {
+  let hayErrores = false;
+
+  for (let i = 0; i < excelData.length; i++) {
+
+    if (typeof excelData[i].Matricula !== 'number') {
+      excelData[i]._errors.Matricula = true;
+      hayErrores = true;
+      this.filasConError.add(i + 1);
+      this.totalErroresExcel++;   // 👈 NUEVO
+    }
+  }
+
+  return !hayErrores;
+}
+
+/*
+procesarErroresExcel() {
+  const filas = Array.from(this.filasConError).sort((a, b) => a - b);
+
+  if (filas.length > 3) {
+    this.errors.push(
+      `Se detectaron errores en las filas: ${filas.join(', ')}. 
+       Existen más de 3 errores, revise todo el archivo.`
+    );
+  } else if (filas.length > 0) {
+    this.errors.push(
+      `Errores detectados en las filas: ${filas.join(', ')}.`
+    );
+  }
+}
+*/
+
+
+
+procesarErroresExcel() {
+  const filas = Array.from(this.filasConError).sort((a, b) => a - b);
+
+  if (this.totalErroresExcel > 3) {
+    this.errors.push(
+      `Se detectaron ${this.totalErroresExcel} errores en el archivo.
+       Existen más de 3 errores, revise todo el archivo.`
+    );
+  } else if (this.totalErroresExcel > 0) {
+    this.errors.push(
+      `Se detectaron ${this.totalErroresExcel} errores en las filas: ${filas.join(', ')}.`
+    );
+  }
+}
+
+
 
 
 chosenYearHandlerPer(normalizedYear: Moment) {

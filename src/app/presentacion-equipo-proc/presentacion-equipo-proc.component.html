@@ -4,45 +4,108 @@
       <form [formGroup]="adminForm" autocomplete="off"  (ngSubmit)="generarCierre()">
          <mat-card *ngIf="perfilUsu">
            <div class="alert alert-light" > 
-             <mat-card-subtitle>
-               <h1> CIERRE y PROCESAMIENTO DE PROFORMAS DE EQUIPOS</h1>
-             </mat-card-subtitle>
-               <mat-card-content>           
-                  <mat-form-field >
-                  <mat-label>Fecha Cierre</mat-label>
-                  <input matInput [matDatepicker]="dp"  formControlName="fechaCierre" >
-                  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                  <mat-datepicker #dp>
-                  </mat-datepicker>
-                  </mat-form-field>
-                  <div> <!--  [disabled]="loading" -->
-                   <button mat-raised-button
-                           class="send-btn field" 
-                           type="submit" 
-                         
-                           >
-                           Generar el cierre
-                   </button>
-                 </div>
-               </mat-card-content>
+            <mat-card-header>
+               <mat-card-title><h1> CIERRE DE PROFORMAS DE EQUIPOS</h1></mat-card-title>
+               <mat-card-subtitle>Información general de proformas listas para ser cerradas.  </mat-card-subtitle>
+            </mat-card-header>
+             <mat-card-actions>  
+                  <!-- <div class="alert alert-light" > -->
+                        <mat-form-field >
+                        <mat-label>Fecha Cierre</mat-label>
+                        <input matInput [matDatepicker]="dp"  formControlName="fechaCierre" >
+                        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                        <mat-datepicker #dp>
+                        </mat-datepicker>
+                        </mat-form-field>
+                         <!--  [disabled]="loading" -->
+                        <button mat-raised-button
+                                 class="send-btn field" 
+                                 type="submit"                     
+                                 >
+                                 Generar el cierre
+                        </button>
+                    <!-- </div> -->
+             </mat-card-actions>    
+             <mat-card-content> 
+
+            <div class="tabla-container">
+
+            <table mat-table [dataSource]="dataSourceACerrar" class="tabla-sheets">
+
+             <!-- Columna Equipo -->
+                  <ng-container matColumnDef="ID">
+                  <th mat-header-cell *matHeaderCellDef> ID </th>
+                  <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                  </ng-container>
+
+                 <!-- Columna Equipo -->
+                  <ng-container matColumnDef="Equipo">
+                     <th mat-header-cell *matHeaderCellDef> Equipo </th>
+                     <td mat-cell *matCellDef="let element"> {{element.equipo}} </td>
+                  </ng-container>
+
+                  <!-- Columna Periodo -->
+                  <ng-container matColumnDef="Periodo">
+                     <th mat-header-cell *matHeaderCellDef> Periodo </th>
+                     <td mat-cell *matCellDef="let element"> {{element.periodo}} </td>
+                  </ng-container>
+
+                  <!-- Columna Cantidad -->
+                  <ng-container matColumnDef="Cantidad">
+                     <th mat-header-cell *matHeaderCellDef> Cantidad de Bonos </th>
+                     <td mat-cell *matCellDef="let element"> {{element.cantidadRegistros}} </td>
+                  </ng-container>
+
+                  <!-- Columna FechaCarga -->
+                  <ng-container matColumnDef="FechaCarga">
+                     <th mat-header-cell *matHeaderCellDef> Fecha de Carga </th>
+                     <td mat-cell *matCellDef="let element">{{element.fechaCarga | date:'dd-MM-yyyy'}}</td>
+                  </ng-container>
+
+                  <!-- Columna Usuario -->
+                  <ng-container matColumnDef="Usuario">
+                     <th mat-header-cell *matHeaderCellDef> Usuario de Carga </th>
+                     <td mat-cell *matCellDef="let element"> {{element.usuarioCarga}} </td>
+                  </ng-container>
+
+                  <!-- Columna Estado -->
+                  <ng-container matColumnDef="Estado">
+                     <th mat-header-cell *matHeaderCellDef> Estado </th>
+                     <td mat-cell *matCellDef="let element">{{ element.estado }}</td>
+                  </ng-container>
+
+ 
+
+            <!-- Filas -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsACerrar"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsACerrar"></tr>
+            </table>
+
+            <!-- Sin datos -->
+            <div class="sin-datos" *ngIf="!(dataSourceACerrar.data.length > 0)">
+            <b>No se registran presentaciones</b>
+            </div>
+
+            <!-- Paginador -->
+            <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+         </div>
+
+            </mat-card-content>
           </div>   
-         </mat-card>
-         <mat-card  *ngIf="perfilUsu">  
-            <div class="alert alert-light" > 
-           <!-- <span *ngIf="loading">
-                <i class="fa fa-spinner fa-spin"></i> Procesando...
-            </span> -->
-            <!--  [disabled]="loading" -->
-            <div><button   mat-raised-button
-                class="send-btn field"  
-                (click)="procesar()" 
-                type="button"
-                
-               > Procesar </button> </div>
-            </div>  
-         </mat-card>
+
+        </mat-card>
+       
       </form>
    </div>
+
+
+
+
+
+
+
+
+
 
 
 <!-- ****************** DIALOG LOADER (BLOQUEA PANTALLA) ****************** -->

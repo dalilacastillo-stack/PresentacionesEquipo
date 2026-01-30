@@ -17,6 +17,9 @@ import { registerLocaleData } from '@angular/common';
 import localeEsAr from '@angular/common/locales/es-AR';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { PresentacionEquipoProcComponent } from './presentacion-equipo-proc/presentacion-equipo-proc.component';
+import { PresentacionEquipoRechazosComponent } from './presentacion-equipo-rechazos/presentacion-equipo-rechazos.component';
+import { PresentacionEquipoDetalleRechazosComponent } from './presentacion-equipo-detalle-rechazos/presentacion-equipo-detalle-rechazos.component';
+import { PresentacionEquipoProcFinalComponent } from './presentacion-equipo-proc-final/presentacion-equipo-proc-final.component';
 
 registerLocaleData(localeEsAr, 'es-Ar');
 
@@ -28,7 +31,10 @@ registerLocaleData(localeEsAr, 'es-Ar');
     HomeComponent,
     HeaderComponent,
     MainLayoutComponent,
-    PresentacionEquipoProcComponent
+    PresentacionEquipoProcComponent,
+    PresentacionEquipoRechazosComponent,
+    PresentacionEquipoDetalleRechazosComponent,
+    PresentacionEquipoProcFinalComponent
   ],
   imports: [
     BrowserModule,

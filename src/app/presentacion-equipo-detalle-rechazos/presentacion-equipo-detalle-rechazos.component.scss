@@ -1,0 +1,23 @@
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.card-title-text {
+  margin: 0;
+}
+
+.info-presentacion {
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  row-gap: 10px;
+  column-gap: 20px;
+  text-align: left;
+}

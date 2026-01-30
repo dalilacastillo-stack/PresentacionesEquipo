@@ -1,4 +1,13 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { environment } from 'src/environments/environment';
+import { EquiposService } from '../servicios/equipos.service';
+import { MatDialog } from '@angular/material/dialog';
+
+
+/*
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { EquiposService } from '../servicios/equipos.service';
 import { MatDatepicker } from '@angular/material/datepicker';
@@ -9,20 +18,28 @@ import {Moment} from 'moment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+*/
+
+
+
+
 
 @Component({
-  selector: 'app-presentacion-equipo-proc',
-  templateUrl: './presentacion-equipo-proc.component.html',
-  styleUrls: ['./presentacion-equipo-proc.component.scss']
+  selector: 'app-presentacion-equipo-proc-final',
+  templateUrl: './presentacion-equipo-proc-final.component.html',
+  styleUrls: ['./presentacion-equipo-proc-final.component.scss']
 })
-export class PresentacionEquipoProcComponent implements OnInit {
+export class PresentacionEquipoProcFinalComponent implements OnInit {
 
-        adminForm: FormGroup;
+
+
+
+       
         user: any;
       
-        dataSourceACerrar: any = new MatTableDataSource();
+        dataSourceProc: any = new MatTableDataSource();
         //dataSourceACerrar = new MatTableDataSource<any>([]);
-        displayedColumnsACerrar: string[] = [  'ID', 'Equipo','Periodo',  'Cantidad', 'FechaCarga', 'Usuario', 'Estado' ];
+        displayedColumnsAProcesar: string[] = [  'ID', 'Equipo','Periodo',  'Cantidad', 'FechaCarga', 'Usuario', 'Estado' ,'FechaCierre', 'UsuCierre',];
 
 
         usuario   = JSON.parse(localStorage.getItem("currentUser"))
@@ -31,17 +48,15 @@ export class PresentacionEquipoProcComponent implements OnInit {
        
      
        @ViewChild('loaderDialog') loaderDialog: TemplateRef<any>;
-       @ViewChild('confirmarCierreDialog') confirmarCierreDialog: TemplateRef<any>;
-       @ViewChild('mensajeExitosoCierreDialog') mensajeExitosoCierreDialog: TemplateRef<any>;
        @ViewChild('confirmarProcesarDialog') confirmarProcesarDialog: TemplateRef<any>;
        @ViewChild('mensajeExitosoProcesarDialog') mensajeExitosoProcesarDialog: TemplateRef<any>;
        @ViewChild('paginator', { read: MatPaginator }) paginator: MatPaginator;
 
         constructor(private service: EquiposService ,
-              private formBuilder : FormBuilder,
-              public dialog: MatDialog,
-              private _snackBar: MatSnackBar /*,
-                private cdr: ChangeDetectorRef*/
+             
+              public dialog: MatDialog
+           //   private _snackBar: MatSnackBar /*,
+             //   private cdr: ChangeDetectorRef*/
                 ) { 
         //  this.user = JSON.parse(localStorage.getItem('rcmUser')) ? JSON.parse(localStorage.getItem('rcmUser')) : '' ;
         this.user = JSON.parse(localStorage.getItem('currentUser')) ? JSON.parse(localStorage.getItem('currentUser')) : '' ;
@@ -52,72 +67,21 @@ export class PresentacionEquipoProcComponent implements OnInit {
        console.log("PERFIL",this.idPerfil);
        console.log(this.perfilUsu);
    
-        this.adminForm = this.formBuilder.group({
-           fechaCierre:[ ]
-         })
-
-          this.listadoProformasACerrar();
+       
+          this.proformasAProcesar();
 
        } 
 
  
 
 
-  generarCierre(){
-     if( this.adminForm.controls.fechaCierre.value !== null){
-        // this.loading = true;
-        const dialogRef =  this.dialog.open(this.confirmarCierreDialog, {
-        disableClose: true,
-        autoFocus: true ,
-        maxWidth: '50vw',
-        minWidth: "45vw",
-        // data: data
-        });
-            dialogRef.afterClosed().subscribe(result => {
-               if (result) {
-                         // ABRIR LOADER
-                        const loader = this.dialog.open(this.loaderDialog, {
-                        disableClose: true,
-                        panelClass: 'no-padding-dialog'
-                         });
-                       const fechaCierre = this.adminForm.controls.fechaCierre.value;
-                       const fechaFormateada = fechaCierre  
-                              ? fechaCierre.toISOString().slice(0, 10).replace(/-/g, '/')
-                              : null;
-                        var jsonCierre : any = {  
-                         //   fechaCierre : this.adminForm.controls.fechaCierre.value.format('YYYY/MM/DD'), 
-                         //   fechaCierre: this.adminForm.controls.fechaCierre.value.format('YYYY/MM/DD'), 
-                              fechaCierre: fechaFormateada,
-                              userLog : this.user.usuario,
-                              fechaLog :moment().format("YYYY-MM-DD HH:mm:ss"),
-                              fechaCarga :moment().format("YYYY-MM-DD HH:mm:ss")     
-                         };       
-                       this.service.generarCierre(jsonCierre).subscribe({
-                                next: (data)=>{
-                                      this.listadoProformasACerrar();
-                                      loader.close();        //  CERRAR LOADER
-                                      this.mostrarMensajeExitoCierre(data);
-                                      },
-                                error: () => { 
-                                      loader.close();        //  CERRAR LOADER
-                                       console.error("error al generar el cierre");
-                                      }
-                             });
-                  }
-             } )
-      }else{
-      let msj2 = 'Debe seleccionar la fecha de cierre';
-      this.openSnackBar1(msj2);
-       }
-    }
-    
-
+/*
 openSnackBar1(mensaje:string) {
   this._snackBar.open(mensaje, 'Aceptar', {
   });
  }
 
-
+*/
 
 
    procesar(){
@@ -142,6 +106,7 @@ openSnackBar1(mensaje:string) {
                     }
                   this.service.procesar(infoProc).subscribe({
                          next: (data)=>{
+                              this.proformasAProcesar();
                                loader.close();         //  CERRAR LOADER
                                console.log("OK procesados");
                                this.mostrarMensajeExitoProcesar(data);
@@ -160,31 +125,7 @@ openSnackBar1(mensaje:string) {
     
 
 
-      chosenYearHandler(normalizedYear: Moment) {
-    if (this.adminForm.controls.fechaCierre.value != null) {
-      const ctrlValue =  this.adminForm.controls.fechaCierre.value;
-      ctrlValue.year(normalizedYear.year());
-      this.adminForm.controls.fechaCierre.setValue(ctrlValue);
-    }
-  }
 
-  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
-    if ( this.adminForm.controls.fechaCierre.value != null) {
-      const ctrlValue =  this.adminForm.controls.fechaCierre.value;
-    //  ctrlValue.month(normalizedMonth.month());
-      this.adminForm.controls.fechaCierre.setValue(ctrlValue);
-      datepicker.close();
-    }
-  }
-
-
-  mostrarMensajeExitoCierre(resp){
-        const dialogRef =  this.dialog.open(this.mensajeExitosoCierreDialog, {
-        disableClose: true,
-        autoFocus: true ,
-        data: resp
-      });
-    }
 
     mostrarMensajeExitoProcesar(resp){
       const dialogRef2 =  this.dialog.open(this.mensajeExitosoProcesarDialog, {
@@ -197,13 +138,13 @@ openSnackBar1(mensaje:string) {
 
 
 
-listadoProformasACerrar(){
+proformasAProcesar(){
     let matricula= this.user.usuario;
     console.log("MATRICULA DE SESSION",matricula);
 
     let dataTable: any[] = [];
-    this.dataSourceACerrar.data = []; 
-    this.dataSourceACerrar._updateChangeSubscription();
+    this.dataSourceProc.data = []; 
+    this.dataSourceProc._updateChangeSubscription();
     
    
      // this.service.getLotes(matricula, moment(desde).format('DD/MM/YYYY'), moment(hasta).format('DD/MM/YYYY')).subscribe(
@@ -212,15 +153,15 @@ listadoProformasACerrar(){
       //if (sistema.length > 0)  
       let idPerfil = sistema[0].IdPerfil;  //3 medico //1 admin 
      // let idPerfil = sistema[0].IdPerfil==1;  //3 medico //1 admin 
-     this.service.listadoProformasACerrar(matricula,idPerfil).subscribe(
+     this.service.listadoProformasAProcesar(matricula,idPerfil).subscribe(
         data => {
         console.log("dataaaaa:" + JSON.stringify(data));
         
         let dataTable = data != null ? data: []; 
-        this.dataSourceACerrar.data = dataTable;
+        this.dataSourceProc.data = dataTable;
        // this.isLoading = false;
         //this.resetInMemoryFilter();
-        this.dataSourceACerrar._updateChangeSubscription();
+        this.dataSourceProc._updateChangeSubscription();
          // this.updateGoto();
          // this.jumpToPage(1);    
         },

@@ -32,6 +32,9 @@ import { PresentacionEquipoComponent } from './presentacion-equipo/presentacion-
 import { PresentacionEquipoListadoComponent } from './presentacion-equipo-listado/presentacion-equipo-listado.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { PresentacionEquipoProcComponent } from './presentacion-equipo-proc/presentacion-equipo-proc.component';
+import { PresentacionEquipoRechazosComponent } from './presentacion-equipo-rechazos/presentacion-equipo-rechazos.component';
+import { PresentacionEquipoDetalleRechazosComponent } from './presentacion-equipo-detalle-rechazos/presentacion-equipo-detalle-rechazos.component';
+import { PresentacionEquipoProcFinalComponent } from './presentacion-equipo-proc-final/presentacion-equipo-proc-final.component';
 
 /*const routes: Routes = [
   { path  : '', pathMatch: 'full'             , redirectTo: 'home'                        },//Por defecto redirecciona a el home
@@ -58,10 +61,30 @@ const routes: Routes = [
       { path: 'equipos-listado', component: PresentacionEquipoListadoComponent },
       { path: 'equipos', component: PresentacionEquipoComponent },
       { path: 'equipos-procesamiento', component: PresentacionEquipoProcComponent },
+      { path: 'equipos-procFinal', component: PresentacionEquipoProcFinalComponent },
+      { path: 'equipos-rechazos', component: PresentacionEquipoRechazosComponent },
+      { path: 'detalle-rechazos/:id', component: PresentacionEquipoDetalleRechazosComponent  },
       { path: '', redirectTo: 'equipos-listado', pathMatch: 'full' }
     ]
   }
 ];
+
+/*
+
+const routes: Routes = [
+  {
+    path: 'detalle-rechazo/:id',
+    component: DetalleRechazoComponent
+  }
+];
+
+
+*/ 
+
+
+
+
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

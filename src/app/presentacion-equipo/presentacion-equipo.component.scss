@@ -61,6 +61,7 @@ mat-expansion-panel {
 .info-check-img {
   min-width: 240px;
   text-align: center;
+  color: #1B432C ;  
 }
 
 .img-title {
@@ -346,4 +347,25 @@ mat-expansion-panel {
 }
 .dialog-error .btn-primary-modern:hover {
   background: #b71c1c !important;
+}
+
+
+//para marcar la celda con error del listado de bonos presentados
+.celda-error {
+  background-color: #fdecea;
+  color: #b71c1c;
+  font-weight: 600;
+  border-left: 4px solid #d32f2f;
+}
+
+//para que tengo un tono mas claro el nombre del archivo
+.nombre-archivo {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #555;
+}
+//para que el input file este oculto
+.input-file-oculto {
+  display: none;
 }

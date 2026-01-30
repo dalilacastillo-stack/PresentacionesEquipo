@@ -69,10 +69,17 @@ export class AutheticationService{
 */
 
     }
-    
+
+
+  //Verifica si la aplicación NO está en producción  
+  //Busca un usuario por defecto configurado en "sitios"
+  //Si no hay usuario logueado: guarda un usuario falso en localStorage
+  //y deja el sistema como si estuviera logueado, o sea Si estoy en desarrollo
+  // y todavía no hay sesión, creame una automáticamente
+
     CrearLogin(){
-      console.log(environment.production)
-      if(!environment.production){
+      console.log(environment.production) 
+      if(!environment.production){ 
         var sistema : any = Object.values(this.sitios).find( (item : any) => {
           return item.defecto == true
        });
@@ -89,7 +96,13 @@ export class AutheticationService{
       }
     }
     
-    Redireccionar(){
+      //Se asegura de que exista un usuario (llama al CrearLogin)
+      //Verifica que no estés ya en la URL principal
+      //Evalúa si existe usuario y si el usuario tiene permiso para este sistema
+      //Cada vez que entro al sistema, verifico si este usuario puede estar acá
+      //tener en cuenta que un usuario puede estar logueado,
+      // pero no autorizado para este modulo
+      Redireccionar(){
       this.CrearLogin();
       if(environment.returnUrl + "/" != document.location.href){
         if(this.usuario!=null){
@@ -113,6 +126,11 @@ export class AutheticationService{
       return valido;
     }
     
+       // Arma información del sistema actual
+        //Construye una URL de logout
+       // Borra el usuario del localStorage
+       // Devuelve la URL para redireccionar
+
     CerrarSession(){
       var returnUrl = btoa(environment.returnUrl);
       var json = {"idSistema":environment.idSistema,"volver":returnUrl,"ver":false,"sistema":"Proforma de Equipos"}
