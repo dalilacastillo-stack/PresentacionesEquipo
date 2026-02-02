@@ -19,4 +19,9 @@ export class NavbarComponent implements OnInit {
     CambiarPerfil(perfil : string){
         this.authentication.CambiarPefil(perfil);       
     }
+
+    CerrarSesion(){
+        this.authentication.CerrarSesion(); 
+     
+    }
 }

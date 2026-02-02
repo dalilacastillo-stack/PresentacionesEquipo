@@ -15,7 +15,7 @@ export class AutheticationService{
     }
 
     
-  //ARMAMOS UNO MEJOR ASI LO VAS ENTENDIENDO
+
   //Vamos a armar una lista primero que nos va ayudar con los perfiles asi vos podes testear con varios perfiles en local 
    
   sitios = [
@@ -23,13 +23,13 @@ export class AutheticationService{
       perfil    :"Administrador", 
       idPerfil  : 1,
       defecto   : true,
-      user      : "dalila"  //pero para porque no estoy segura?
+      user      : "dalila"  
     },
     {  
       perfil    :"medico",      
       idPerfil  : 3    ,
       defecto   : false,
-      user      : 118002 // matricula del equipo que lo integra 
+      user      :  117911 // 118002 // matricula del equipo que lo integra 
     },
     { 
        perfil   :"equipo",
@@ -70,7 +70,7 @@ export class AutheticationService{
         localStorage.removeItem("currentUser");
         localStorage.removeItem("rcmUser");
 
-        //Redireccionamos al login
+        //Redireccionamos al login 
         location.href = `${environment.logout}?token=${btoa(JSON.stringify(json))}`
     }
     else{
@@ -81,7 +81,7 @@ export class AutheticationService{
     }
   }
 
-  //
+  
   CrearSesionLocal(){
     console.log("PASO POR ACA")
     if(!environment.production){

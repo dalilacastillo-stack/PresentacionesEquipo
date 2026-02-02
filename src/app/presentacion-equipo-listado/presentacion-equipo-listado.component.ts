@@ -79,36 +79,32 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
   listadoHeadersProformas(){
     let matricula= this.user.usuario;
     console.log("MATRICULA DE SESSION",matricula);
-    //this.isLoading = true;
-    //let dataTable: any[] = [];
+  
     this.dataSource.data = []; 
-    this.dataSource._updateChangeSubscription();
-    
-   
-     // this.service.getLotes(matricula, moment(desde).format('DD/MM/YYYY'), moment(hasta).format('DD/MM/YYYY')).subscribe(
+  //  this.dataSource._updateChangeSubscription();
+       
       var sistema = this.user.Sistemas.filter(d => d.Id==environment.idSistema);
       console.log(sistema[0])
       //if (sistema.length > 0)  
       let idPerfil = sistema[0].IdPerfil;  //3 medico //1 admin 
      // let idPerfil = sistema[0].IdPerfil==1;  //3 medico //1 admin 
+  
      this.service.getHeadersProformas(matricula,idPerfil).subscribe(
         data => {
-        console.log("data:" + JSON.stringify(data));
-        
-        let dataTable = data != null ? data: []; //---------------agregue el let----------------------
-        this.dataSource.data = dataTable;
-       // this.isLoading = false;
-        //this.resetInMemoryFilter();
-        this.dataSource._updateChangeSubscription();
-         // this.updateGoto();
-         // this.jumpToPage(1);    
-        },
+                    console.log("data:" + JSON.stringify(data));
+                    
+                    let dataTable = data != null ? data: []; 
+                    this.dataSource.data = dataTable;
+              
+                    //this.dataSource._updateChangeSubscription();
+                    
+                    },
         error => {
-          if (error.status != 0) {  
-            console.log('Ocurrió un error al obtener los datos de las proformas');
-           // toastr.error('Ocurrió un error al obtener los datos históricos', 'Atención: ');
-          }
-          //this.isLoading = false;
+                    if (error.status != 0) {  
+                      console.log('Ocurrió un error al obtener los datos de las proformas');
+                    // toastr.error('Ocurrió un error al obtener los datos históricos', 'Atención: ');
+                    }
+                  
         }
       );
      

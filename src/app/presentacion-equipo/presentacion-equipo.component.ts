@@ -258,20 +258,21 @@ dialogData!: {
    ngOnInit() {  
     console.log("usuarioo ",this.usuario);
 
-    console.log("PERFIL ACTUAL",this.idPerfil);
-    console.log(this.perfilUsu);
+    console.log("PERFIL ACTUAL   idPerfil-->",this.idPerfil);
+    console.log("PERFIL ACTUAL perfilUsu-->",this.perfilUsu);
     //valida si es un equipo
     //const esEquipo = /^[0-9]{6}$/.test(this.matricula.trim()) && this.matricula.trim().startsWith("995");
 
    // if ((this.idPerfil == 3 ) && (esEquipo == true)) {
-    //  this.equipos =  //getInfoEquipo   
-     this.getInfoEquipo();
-
+    //  this.equipos =  //getInfoEquipo    */
+    
+    if (this.idPerfil == 1 ){
+      this.getInfoEquipo();
             
-   /* }else{ 
+    }else{ 
       this.getEquipos() ;
     }
-  */
+  
 /*
   nombre: ['', Validators.required],
       fechaNacimiento: [{ value: '', disabled: true }, Validators.required],
@@ -338,18 +339,25 @@ dialogData!: {
   }
  
 getInfoEquipo(){
+
+  console.log("this.usuario.usuario", this.usuario.usuario)   ;
      this.service.getInformacionEquipo(this.usuario.usuario)
   .subscribe((result : any)=>{ 
+     // if(result.length >0) {
        const equipoAdaptado = {
                                  Matricula: result.IdEquipo,
                                  NombreEquipo: result.Nombre
                                };
+
+                             
           console.log("equipoAdaptado", equipoAdaptado)                     
 
        this.equipos.push(equipoAdaptado);
+      //}
   })
 
 }
+
 
  getEquipos(){
   this.service.getEquipos(this.usuario.usuario)

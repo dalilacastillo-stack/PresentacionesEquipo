@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap, catchError, Observable } from 'rxjs';
+import { tap, catchError, Observable, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -206,7 +206,20 @@ guardar(json : any) {
   return this.http.get(`${this.apiUrl}equipo-listado/getHeadersProformas/${matricula}/${idPerfil}`)
 
 }
-
+/*
+getHeadersProformas(matricula: any, idPerfil: number) {
+  return this.http
+    .get<any[]>(`${this.apiUrl}equipo-listado/getHeadersProformas/${matricula}/${idPerfil}`)
+    .pipe(
+      catchError(err => {
+        if (err.status === 404) {
+          return of([]); // lo tratamos como lista vacía
+        }
+        return throwError(() => err);
+      })
+    );
+}
+*/
 
 listadoProformasACerrar(matricula:any, idPerfil:Number) {
     console.log("usuariosesion --->",matricula);
