@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { environment } from "src/environments/environment.development";
+import { environment } from "src/environments/environment";
 
 
 @Injectable({
@@ -29,7 +29,7 @@ export class AutheticationService{
       perfil    :"medico",      
       idPerfil  : 3    ,
       defecto   : false,
-      user      :  117911 // 118002 // matricula del equipo que lo integra 
+      user      : 118141// 117911 // 118002 // matricula del equipo que lo integra 
     },
     { 
        perfil   :"equipo",
@@ -42,11 +42,15 @@ export class AutheticationService{
   usuario = JSON.parse(localStorage.getItem("currentUser"));
 
   Validar(){
+    console.log('USUARIO:', this.usuario);
     if(this.usuario != null){
         // - Verificamos que em los sistemas habilitados de usuario se encuentre el nuestro
+        console.log('USUARIOAGAIN:', this.usuario);
       let sistema = this.usuario.Sistemas.filter((item) => {
         item.Id == environment.idSistema
       });
+
+      console.log('sistema:', sistema);
       if(sistema.length > 0){ // se encontro
         //Redireccionas al home
         location.href = "/home"

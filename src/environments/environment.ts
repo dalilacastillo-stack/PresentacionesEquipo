@@ -1,5 +1,5 @@
 export const environment = {
- production  : true,
+ production  : false,
  idSistema   : 31,
  returnUrl   :' https://sistemas.amepla.org.ar/test/archivos-equipo',
  logout:'https://sistemas.amepla.org.ar/login/login/',
