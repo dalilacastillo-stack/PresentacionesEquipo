@@ -1,9 +1,9 @@
 export const environment = {
- production  : false,
+ production  : false, //false,
  idSistema   : 31,
  returnUrl   :' https://sistemas.amepla.org.ar/test/archivos-equipo',
- logout:'https://sistemas.amepla.org.ar/login/login/',
- apiUrl: 'https://localhost:44349/' //ACA IRIA TU BACK CUANDO LO PUBLIQUEN (ruta del back)
+ logout      :'http://localhost:4200/', // X AHORA COMO ES EL LOCAL LE VAMOS A DECIR QUE VAYA AL MISMO PATH
+ apiUrl      : 'https://localhost:44349/' //ACA IRIA TU BACK CUANDO LO PUBLIQUEN (ruta del back)
 };
 
 /*

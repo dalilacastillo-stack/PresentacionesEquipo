@@ -203,6 +203,9 @@ guardar(json : any) {
 */
   getHeadersProformas(matricula:any, idPerfil:Number) {
     console.log("usuariosesion --->",matricula);
+      console.log("   this.apiUrl --->",   this.apiUrl);
+
+ 
   return this.http.get(`${this.apiUrl}equipo-listado/getHeadersProformas/${matricula}/${idPerfil}`)
 
 }

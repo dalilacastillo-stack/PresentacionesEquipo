@@ -6,19 +6,6 @@ import { EquiposService } from '../servicios/equipos.service';
 import { MatDialog } from '@angular/material/dialog';
 
 
-/*
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { EquiposService } from '../servicios/equipos.service';
-import { MatDatepicker } from '@angular/material/datepicker';
-import { MatDialog } from '@angular/material/dialog';
-import { environment } from 'src/environments/environment';
-import * as moment from 'moment';
-import {Moment} from 'moment';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-*/
 
 
 
@@ -75,13 +62,6 @@ export class PresentacionEquipoProcFinalComponent implements OnInit {
  
 
 
-/*
-openSnackBar1(mensaje:string) {
-  this._snackBar.open(mensaje, 'Aceptar', {
-  });
- }
-
-*/
 
 
    procesar(){
@@ -100,10 +80,19 @@ openSnackBar1(mensaje:string) {
                    disableClose: true,
                    panelClass: 'no-padding-dialog'
                    });  
-                   var infoProc  = {  
-                       userLog : this.user.usuario,
-                       perfil : this.idPerfil
-                    }
+                
+                  // Obtener lista de ID de los archivos que están en la tabla
+                  const listaIdCabecera = this.dataSourceProc.data.map(x => x.id);
+
+                  var infoProc  = {  
+                    userLog : this.user.usuario,
+                    perfil : this.idPerfil,
+                    idsCabecera: listaIdCabecera
+                  }
+
+                  console.log("IDs a procesar:", listaIdCabecera);
+
+
                   this.service.procesar(infoProc).subscribe({
                          next: (data)=>{
                               this.proformasAProcesar();
@@ -117,10 +106,7 @@ openSnackBar1(mensaje:string) {
                     });
                }
          })
-          /* }else{
-           let msj2 = 'Debe seleccionar la fecha de cierre';
-           this.openSnackBar1(msj2);
-          }*/
+        
       }
     
 

@@ -9,12 +9,16 @@ import { environment } from "src/environments/environment";
   
 
 export class AutheticationService{
-    constructor(
-        private router : Router
-    ) {
-    }
+    //constructor(    private router : Router  ) {    }
 
     
+usuario: any = null;
+
+constructor(private router: Router) {
+  const rawUser = localStorage.getItem('currentUser');
+  this.usuario = rawUser ? JSON.parse(rawUser) : null;
+}
+
 
   //Vamos a armar una lista primero que nos va ayudar con los perfiles asi vos podes testear con varios perfiles en local 
    
@@ -29,7 +33,7 @@ export class AutheticationService{
       perfil    :"medico",      
       idPerfil  : 3    ,
       defecto   : false,
-      user      : 118141// 117911 // 118002 // matricula del equipo que lo integra 
+      user      : 118141//117911 //118141 // 118002 // matricula del equipo que lo integra 
     },
     { 
        perfil   :"equipo",
@@ -39,28 +43,61 @@ export class AutheticationService{
     } 
   ]
   //este seria el usuario logeado del login si da el caso de que exista sino es null
-  usuario = JSON.parse(localStorage.getItem("currentUser"));
 
-  Validar(){
-    console.log('USUARIO:', this.usuario);
-    if(this.usuario != null){
-        // - Verificamos que em los sistemas habilitados de usuario se encuentre el nuestro
-        console.log('USUARIOAGAIN:', this.usuario);
-      let sistema = this.usuario.Sistemas.filter((item) => {
+
+  
+  //usuario = JSON.parse(localStorage.getItem("currentUser"));
+  //get usuario() {
+  //  return JSON.parse(localStorage.getItem("currentUser"));
+ // }
+
+  //Validar(){
+  
+   // if(this.usuario != null){
+    
+     /*  let sistema = this.usuario.Sistemas.filter((item) => {
         item.Id == environment.idSistema
-      });
+      });         ----> NO retorna nada, porque usaste llaves {} y no devolvés el boolean, así como está, siempre devuelve []*/
 
-      console.log('sistema:', sistema);
-      if(sistema.length > 0){ // se encontro
-        //Redireccionas al home
-        location.href = "/home"
-      }else{
-        this.CerrarSesion()
-      }
-    }else{
-      this.CerrarSesion()
+      //let sistema = this.usuario.Sistemas.filter( item => item.Id === environment.idSistema);
+
+   
+   //   if(sistema.length > 0){ 
+        
+      // location.href = "/home"  
+
+      // }else{
+   //      this.CerrarSesion()
+      //}
+  //  }else{
+        // this.CerrarSesion()
+  //  }
+ // }
+
+Validar() {
+  if(environment.production){ // este
+    if (!this.usuario) {
+      console.log('NO HAY USUARIO → LOGOUT'); // NO cuenta porque para el local no te creara el login por eso el if inicial
+      this.CerrarSesion();
+      return;
     }
+  }else{
+    this.CrearSesionLocal();
   }
+  const sistema = this.usuario.Sistemas?.find(
+    item => item.Id === environment.idSistema
+  );
+  if (sistema) {
+      console.log('OK → HOME');
+    this.router.navigate(['/home']);
+  } else {
+    console.log('NO TIENE SISTEMA → LOGOUT');
+    this.CerrarSesion();
+  }
+}
+
+
+
   CerrarSesion(){
     //Lo usaremos para que el login tenga el token que sera este json
     if(environment.production){
@@ -70,29 +107,25 @@ export class AutheticationService{
           ver       : false,
           sistema   : "Carga y Procesamiento de Archivos de Equipo"
         };
-        //Borramos todo lo que este en el localStorage en caso de que tengas mas las agregas aca
+        console.log(json)
+        this.usuario = null;
         localStorage.removeItem("currentUser");
         localStorage.removeItem("rcmUser");
-
         //Redireccionamos al login 
         location.href = `${environment.logout}?token=${btoa(JSON.stringify(json))}`
     }
-    else{
+    else{ 
       if(this.usuario == null){
         this.CrearSesionLocal();
-        location.reload();
       }
     }
   }
 
   
   CrearSesionLocal(){
-    console.log("PASO POR ACA")
     if(!environment.production){
-      this.usuario = JSON.parse(localStorage.getItem("currentUser"))
       if(this.usuario == null){
         var perfilDefault = this.sitios.filter(item=>item.defecto==true) 
-        console.log("Perfil=>"+perfilDefault)
         if(perfilDefault.length > 0){
           var user =  {
             "IdUsuario" :"10687", // aca si habria que poder algun id por si tenes validacion x usuario aunque sea de mentira para que veas que funciona si total no importa mucho a menos que si o si valides x usuario lo que si no se como haces lo de las matriculas entra con matricula y la mandas o solo tomaba las del archivo?
@@ -111,13 +144,13 @@ export class AutheticationService{
             "token":""
           };
           localStorage.setItem("currentUser", JSON.stringify(user));
-          location.reload()
+          localStorage.setItem("rcmUser", JSON.stringify(user));
+          location.reload();
         }
       }
-      
     }
   }
-//antes que nada el navbar te lo creo en layout? como otro componente del layout o como lo pensaste vos a la arquitectura? si lo cree como otro componente
+//antes que nada el navbar te lo creo en layout? como otro componente del layout o como lo pensaste vos a la arquitectura?   -si lo cree como otro componente
 //donde tengo el menu cuando se logue se muestra ese componente..de alli se redireccionan los diferentes componentes que hacen a la funcionalidad del sistema 
   CambiarPefil(perfil : string){
     console.log(perfil)
@@ -128,8 +161,9 @@ export class AutheticationService{
         item.defecto = false;
       }
     });
-    console.log(this.sitios)
+    this.usuario = null
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("rcmUser")
     this.CrearSesionLocal();
     //location.reload()  
   }
