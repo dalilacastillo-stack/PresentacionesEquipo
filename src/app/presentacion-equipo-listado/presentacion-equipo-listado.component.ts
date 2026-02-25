@@ -124,7 +124,9 @@ const dialogRef =  this.dialog.open(this.confirmarEliminarDialog, {
 //console.log("data",data);
 var archivoJson:any = {
         id: data.id,
-        estadoId: 4
+        estadoId: 4,
+        periodo:data.periodo,
+        equipo: data.equipo
   }
 
 dialogRef.afterClosed().subscribe(result => {

@@ -49,7 +49,7 @@
       </mat-expansion-panel>
 
       <!-- SUBMENÚ OPERACIONES -->
-      <mat-expansion-panel [expanded]="!menuColapsado">
+      <mat-expansion-panel *ngIf="esAdmin" [expanded]="!menuColapsado">
         <mat-expansion-panel-header>
           <mat-panel-title>
             <mat-icon class="icon">settings</mat-icon>

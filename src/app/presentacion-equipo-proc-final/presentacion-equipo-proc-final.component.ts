@@ -60,7 +60,9 @@ export class PresentacionEquipoProcFinalComponent implements OnInit {
        } 
 
  
-
+     get hayRegistros(): boolean {
+      return this.dataSourceProc?.data?.length > 0;
+         }       
 
 
 
