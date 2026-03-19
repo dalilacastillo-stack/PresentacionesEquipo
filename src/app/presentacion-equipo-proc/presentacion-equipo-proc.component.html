@@ -9,20 +9,21 @@
                <mat-card-subtitle>Proformas a cerrar.  </mat-card-subtitle>
             </mat-card-header>
              <mat-card-actions>  
-                  <!-- <div class="alert alert-light" > -->
-                        <mat-form-field >
+                
+                      <!--  <mat-form-field >
                         <mat-label>Fecha Cierre</mat-label>
                         <input matInput [matDatepicker]="dp"  formControlName="fechaCierre" >
                         <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
                         <mat-datepicker #dp>
                         </mat-datepicker>
                         </mat-form-field>
-                         <!--  [disabled]="loading" -->
+                      -->
                         <button mat-raised-button
                                  class="send-btn field" 
+                                 [disabled]="!hayRegistros"
                                  type="submit"                     
                                  >
-                                 Generar el cierre
+                                 Cerrar Proformas
                         </button>
                     <!-- </div> -->
              </mat-card-actions>    

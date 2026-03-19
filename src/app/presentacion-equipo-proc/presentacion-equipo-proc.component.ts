@@ -64,7 +64,7 @@ export class PresentacionEquipoProcComponent implements OnInit {
 
 
   generarCierre(){
-     if( this.adminForm.controls.fechaCierre.value !== null){
+    // if( this.adminForm.controls.fechaCierre.value !== null){
         // this.loading = true;
         const dialogRef =  this.dialog.open(this.confirmarCierreDialog, {
         disableClose: true,
@@ -80,14 +80,14 @@ export class PresentacionEquipoProcComponent implements OnInit {
                         disableClose: true,
                         panelClass: 'no-padding-dialog'
                          });
-                       const fechaCierre = this.adminForm.controls.fechaCierre.value;
-                       const fechaFormateada = fechaCierre  
-                              ? fechaCierre.toISOString().slice(0, 10).replace(/-/g, '/')
-                              : null;
+                      // const fechaCierre = this.adminForm.controls.fechaCierre.value;
+                     //  const fechaFormateada = fechaCierre  
+                        //      ? fechaCierre.toISOString().slice(0, 10).replace(/-/g, '/')
+                        //      : null;
                         var jsonCierre : any = {  
                          //   fechaCierre : this.adminForm.controls.fechaCierre.value.format('YYYY/MM/DD'), 
                          //   fechaCierre: this.adminForm.controls.fechaCierre.value.format('YYYY/MM/DD'), 
-                              fechaCierre: fechaFormateada,
+                            fechaCierre: null, //fechaFormateada,
                               userLog : this.user.usuario,
                               fechaLog :moment().format("YYYY-MM-DD HH:mm:ss"),
                               fechaCarga :moment().format("YYYY-MM-DD HH:mm:ss")     
@@ -105,17 +105,22 @@ export class PresentacionEquipoProcComponent implements OnInit {
                              });
                   }
              } )
-      }else{
+     /* }else{
       let msj2 = 'Debe seleccionar la fecha de cierre';
       this.openSnackBar1(msj2);
-       }
+       } */
     }
-    
+   
 
 openSnackBar1(mensaje:string) {
   this._snackBar.open(mensaje, 'Aceptar', {
   });
  }
+
+
+  get hayRegistros(): boolean {
+      return this.dataSourceACerrar?.data?.length > 0;
+         }       
 
 
 
@@ -159,7 +164,7 @@ openSnackBar1(mensaje:string) {
       }
     
 
-
+/*
       chosenYearHandler(normalizedYear: Moment) {
     if (this.adminForm.controls.fechaCierre.value != null) {
       const ctrlValue =  this.adminForm.controls.fechaCierre.value;
@@ -176,6 +181,7 @@ openSnackBar1(mensaje:string) {
       datepicker.close();
     }
   }
+    */
 
 
   mostrarMensajeExitoCierre(resp){

@@ -17,6 +17,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EquiposService } from '../servicios/equipos.service';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import * as moment from 'moment';
 
 
 
@@ -126,7 +127,11 @@ var archivoJson:any = {
         id: data.id,
         estadoId: 4,
         periodo:data.periodo,
-        equipo: data.equipo
+        equipo: data.equipo,
+        fechaDeleted: moment().format("YYYY-MM-DD HH:mm:ss"),
+        usuarioDeleted: this.user.usuario,
+        usuarioCarga:data.usuarioCarga,
+        idPerfil: this.idPerfil
   }
 
 dialogRef.afterClosed().subscribe(result => {

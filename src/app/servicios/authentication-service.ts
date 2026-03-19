@@ -9,8 +9,7 @@ import { environment } from "src/environments/environment";
   
 
 export class AutheticationService{
-    //constructor(    private router : Router  ) {    }
-
+  
     
 usuario: any = null;
 
@@ -20,7 +19,6 @@ constructor(private router: Router) {
 }
 
 
-  //Vamos a armar una lista primero que nos va ayudar con los perfiles asi vos podes testear con varios perfiles en local 
    
   sitios = [
     { // los perfiles
@@ -42,37 +40,9 @@ constructor(private router: Router) {
        user     : 995449 // N° de equipo con el que accederia
     } 
   ]
-  //este seria el usuario logeado del login si da el caso de que exista sino es null
+  //este seria el usuario  login si no existe es null
 
 
-  
-  //usuario = JSON.parse(localStorage.getItem("currentUser"));
-  //get usuario() {
-  //  return JSON.parse(localStorage.getItem("currentUser"));
- // }
-
-  //Validar(){
-  
-   // if(this.usuario != null){
-    
-     /*  let sistema = this.usuario.Sistemas.filter((item) => {
-        item.Id == environment.idSistema
-      });         ----> NO retorna nada, porque usaste llaves {} y no devolvés el boolean, así como está, siempre devuelve []*/
-
-      //let sistema = this.usuario.Sistemas.filter( item => item.Id === environment.idSistema);
-
-   
-   //   if(sistema.length > 0){ 
-        
-      // location.href = "/home"  
-
-      // }else{
-   //      this.CerrarSesion()
-      //}
-  //  }else{
-        // this.CerrarSesion()
-  //  }
- // }
 
 Validar() {
   if(environment.production){ // este

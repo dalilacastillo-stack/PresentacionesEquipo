@@ -863,13 +863,13 @@ isValidCantidadDeColumnas(worksheet, headers): boolean {
 
   const hData = data[0] as Array<any>; // primera fila del excel
 
-  // 🔹 1) Validar cantidad de columnas
+  //  1) Validar cantidad de columnas
   if (!hData || headers.length !== hData.length) {
     this.errors.push("La cantidad de columnas del archivo debe ser 3: Bono, Codigo, Matricula.");
     return false;
   }
 
-  // 🔹 2) Validar nombres exactos de encabezado
+  //  2) Validar nombres exactos de encabezado
   const headersNormalizados = hData.map(h =>
     String(h ?? '').trim().toUpperCase()
   );
@@ -994,11 +994,20 @@ validarLongitudDatos(excelData: any[]): boolean {
         }
 
         this.errors.push(
-          "La matrícula del archivo no coincide con la del usuario logueado."
+          "Observación:  En la columna MATRÍCULA del archivo debe registrar la matricula del profesional que inicio sesión."
         );
 
         hayErrores = true;
       }
+    }else{
+
+         this.errors.push(
+          "Observación:  En la columna MATRÍCULA del archivo debe registrar la misma matricula del profesional para todos los registros."
+        );
+
+        hayErrores = true;
+
+
     }
   }
 

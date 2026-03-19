@@ -3,7 +3,7 @@
 /*----ESTILO DE LA TARJETA INFORMATIVA-----*/
 
 
-/* ✨ MARGEN GENERAL PARA SEPARAR DE LA TARJETA DE ABAJO ✨ */
+/* MARGEN GENERAL PARA SEPARAR DE LA TARJETA DE ABAJO */
 .info-accordion {
   width: 100%;
   margin-top: 20px;
@@ -29,8 +29,8 @@ mat-expansion-panel {
 /*  CUERPO DEL PANEL (texto + imagen)  */
 .info-body-check {
   display: flex;
-  gap: 20px;                /* imagen más cerca del texto */
-  padding: 12px 180px; //12px 10px;
+  gap: 10px;                /* imagen más cerca del texto */
+  padding: 12px 50px; //12px 10px;
   flex-wrap: wrap;
   align-items: flex-start;
 }
