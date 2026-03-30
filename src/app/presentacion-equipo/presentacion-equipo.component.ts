@@ -179,7 +179,6 @@ animations: [
 
     presentacionForm: FormGroup;
 
-    //excelData: any[] = [];
     excelData: ExcelRow[] = [];
 
      cantidadBonos: number;
@@ -197,9 +196,9 @@ animations: [
      totalErroresExcel = 0;
 
      //*******************Corresponde con la grilla***************
-    // displayedColumns: string[] = ['numero','bono', 'codigo', 'matricula'];
+   
      displayedColumns: string[] = [ 'index','Bono', 'Codigo', 'Matricula'];
-    //dataSource: any[] = [];
+    
      dataSource = new MatTableDataSource<any>(this.excelData);
     //**************************************************************
 
@@ -231,10 +230,10 @@ dialogData!: {
                 private formBuilder : FormBuilder,
                 public dialog: MatDialog, 
               
-             //   private _snackBar: MatSnackBar,
+       
                 private cdr: ChangeDetectorRef
                 ) { 
-      //  this.user = JSON.parse(localStorage.getItem('rcmUser')) ? JSON.parse(localStorage.getItem('rcmUser')) : '' ;
+     
         this.user = JSON.parse(localStorage.getItem('currentUser')) ? JSON.parse(localStorage.getItem('currentUser')) : '' ;
     }
 
@@ -259,24 +258,12 @@ dialogData!: {
 
 
     this.presentacionForm = this.formBuilder.group({
-      // Campo de texto: Numero del equipo (obligatorio) - perfil admin
+ 
        numeroEquipoText: ['', [Validators.required, Validators.pattern(/^\d{1,6}$/)]],
-         // Campo de fecha: Fecha de Inicio (obligatorio)
-      // El valor inicial puede ser null o una fecha, Validators.required lo valida
-       //periodo : [ ],
-    // ---periodo :  [null, Validators.required] ,
-     periodo :   [{ value: '', disabled: true }, Validators.required],
-   // Campo de seleccion Nro de Equipo (obligatorio) - perfil medico
-     // numeroEquipo: ['', Validators.required],
-      numeroEquipo:[],
-   
-     
-     // periodo :moment(new Date()).format("YYYYMM"),
-     archivo:[{ value: '', disabled: true }, Validators.required]
-
-    
-   // periodo : [new FormControl({ value: '', disabled: false })],
-     
+       periodo: [{ value: null, disabled: true }, Validators.required],
+       numeroEquipo:[],
+       archivo:[{ value: '', disabled: true }, Validators.required]
+       
     })
      
     this.maxDate.setMonth(this.maxDate.getMonth() - 1);
@@ -291,9 +278,6 @@ dialogData!: {
       // Si el usuario escribe → vuelve a pendiente
       this.estadoValidacion = 'pendiente';
     });
-
-
-  //  this.dataSource.paginator = this.paginator; 
 
      }
    
@@ -364,22 +348,29 @@ getInfoEquipo(){
     const nombre = this.presentacionForm.get('numeroEquipoText')?.value;
     console.log('numeroEquipoText blur:', nombre);
  
-
     if (nombre) {
       this.presentacionForm.get('periodo')?.enable();
-      //  console.log('onBlurNombre', this.confirmarHabilitado);
+      
     }
   }
 
-  onFechaSeleccionada2() {
-    const fecha = this.presentacionForm.get('periodo')?.value;
-    if (fecha && this.equipoValido) {
-      this.presentacionForm.get('archivo')?.enable();
-      //  console.log('onFechaSeleccionada', this.confirmarHabilitado);
+
+
+      onFechaSeleccionada2() {
+        const fecha = this.presentacionForm.get('periodo')?.value;
+
+        if (fecha && this.equipoValido) {
+          this.presentacionForm.get('archivo')?.enable();
           console.log('fecha', fecha);
-      //  this.mensajeInformativo = '📂 Seleccioná un archivo .xlsx';
-    }
-  }
+        } else {
+          this.presentacionForm.get('archivo')?.disable(); 
+        }
+      }
+
+
+
+
+
 
 
 //*************************************Corresponde con la grilla************************************************************/
@@ -400,11 +391,7 @@ validarYEnviar() {// cambiar el enviar y llamar al Confirmar
     console.log("fecha", fecha);
     console.log("this.numEquipo", this.numEquipo);
     this.guardarInformacion();
-    
-
- //this.confirmar();
-
-  
+     
 }
 
 
@@ -520,16 +507,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
 }
 }*/
 
-//confirma2() {
-/*
- if (this.presentacionForm.valid) {
-      console.log('Formulario enviado', this.presentacionForm.value);
-    }*/
 
-// if (this.presentacionForm.valid && this.confirmarHabilitado) {
-     // console.log('Formulario válido!!!!', this.presentacionForm.value);
- //   }
-//  }
 
     
     guardarInformacion(){
@@ -542,12 +520,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                 }
     /*---------------------------------------------------------------------------------*/
  
- // Obtener periodo 
- // const periodoMoment = this.presentacionForm.controls.periodo.value;
 
-
-  // Ej: "Marzo 2026"
- // this.periodoTexto = periodoMoment.format('MMMM YYYY');
 
 
   const periodoMoment = this.presentacionForm.controls.periodo.value;
@@ -573,7 +546,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                         disableClose: true,
                         panelClass: 'no-padding-dialog'
                          });
-                           /* console.log("resultado Excel 2---->:" + JSON.stringify(this.excelData));*/
+                          
                            var json : any = {
                                        id : 0,
                                        idEstado: 1,
@@ -611,7 +584,7 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                                       },
                                 error: () => { 
                                        loaderEnvio.close();        //  CERRAR LOADER
-                                       //console.error("error al generar el cierre");
+                                    
                                       }
                              });
                  }else{  
@@ -621,17 +594,17 @@ this.service.validarEquipo(equi).subscribe((result : any)=>{
                          this.presentacionForm.get('archivo')?.disable();
                          this.equipoValido = false;
                          this.mensajeInformativo = '';
-                         // Limpia tu variable también
+                 
                          this.archivoSeleccionado = null;
                          this.nombreArchivo = null;
-                          //  Limpia el input y quita el nombre del archivo
+                          //  Limpio el input y quita el nombre del archivo
                          this.fileInput.nativeElement.value = null;
                          this.excelData = null; //limpio grilla
                          this.cantidadBonos = 0;
                           this.dataSource.data = [];
                        }  
         })
-            //limpiar listado bonos
+           
      }
 
 
@@ -944,63 +917,11 @@ validarLongitudDatos(excelData: any[]): boolean {
     }
   }
 
-  // ==========================================================
-  // NUEVA VALIDACIÓN GLOBAL DE MATRÍCULA
-  // ==========================================================
-/*
-  if (matriculaReferencia) {
-
-    //  Todas las filas deben tener la misma matrícula
-   
-            for (let i = 0; i < excelData.length; i++) {
-            if (excelData[i].Matricula !== matriculaReferencia) {
-              excelData[i]._errors.Matricula = true;
-              hayErrores = true;
-              this.filasConError.add(i + 1);
-              this.totalErroresExcel++;
-            }
-          }
-      
-
-    //  Si NO es perfil admin (idPerfil != 1)
-    // debe coincidir con la matrícula del usuario logueado
-
- 
-    if (this.idPerfil != 1) {
-
-      const matriculaUsuario = String(this.matricula)
-        .replace(/\s+/g, '')
-        .replace(/[^\d]/g, '');
-
-      if (matriculaReferencia !== matriculaUsuario) {
-
-        for (let i = 0; i < excelData.length; i++) {
-          excelData[i]._errors.Matricula = true;
-          this.filasConError.add(i + 1);
-        }
-
-        this.errors.push(
-          "Observación:  En la columna MATRÍCULA del archivo debe registrar la matricula del profesional que inicio sesión."
-        );
-
-        hayErrores = true;
-      }
-    }else{
-       
-         this.errors.push(
-          "Observación:  En la columna MATRÍCULA del archivo debe registrar la misma matricula del profesional para todos los registros."
-        );
-
-        hayErrores = true;
-
-
-    }
-  }*/
 
 
     if (matriculaReferencia) {
 
-  let todasIguales = true;
+     let todasIguales = true;
 
   // Validar que todas las matrículas sean iguales
   for (let i = 0; i < excelData.length; i++) {
@@ -1045,169 +966,103 @@ validarLongitudDatos(excelData: any[]): boolean {
       hayErrores = true;
     }
   }
-}
-
-
-
-
-
+ }
   return !hayErrores;
 }
 
 
 
+        validarTipoDeDatos(excelData: any[]): boolean {
+          console.log("validarTipoDeDatos");
+          let hayErrores = false;
 
+          for (let i = 0; i < excelData.length; i++) {
 
-/*
+            const matricula = excelData[i].Matricula;
 
-validarLongitudDatos(excelData: any[]): boolean { 
-  let hayErrores = false;
+            // acepta número o string numérico
+            const esValida = /^[0-9]+$/.test(String(matricula));
 
-  for (let i = 0; i < excelData.length; i++) {
+            if (!esValida) {
+              excelData[i]._errors.Matricula = true;
+              hayErrores = true;
+              this.filasConError.add(i + 1);
+              this.totalErroresExcel++;
+            }
+          }
 
-    // ===============================
-    // ===== VALIDACIÓN BONO =====
-    // ===============================
-    const bonoRaw = String(excelData[i].Bono ?? '').trim();
-
-    // reglas de negocio para BONO
-    const tieneNotacionCientifica = /e\+|e-/i.test(bonoRaw); // 6.5E+11
-    const soloNumeros = /^[0-9]+$/.test(bonoRaw);            // solo dígitos
-    const longitudValida = bonoRaw.length > 0 && bonoRaw.length < 17;
-
-    if (
-      !longitudValida ||
-      tieneNotacionCientifica ||
-      !soloNumeros
-    ) {
-      excelData[i]._errors.Bono = true;
-      hayErrores = true;
-      this.filasConError.add(i + 1);
-      this.totalErroresExcel++;
-    } else {
-      // normalizo bono (opcional pero recomendado)
-      excelData[i].Bono = bonoRaw;
-    }
-
-    // ===============================
-    // ===== VALIDACIÓN CÓDIGO =====
-    // ===============================
-    const codigo = String(excelData[i].Codigo ?? '')
-      .trim()
-      .toUpperCase();
-
-    const soloNumerosCod = /^[0-9]{6}$/;
-    const alfaNum1       = /^[A-Z]{2}[0-9]{4}$/;        // MS0012
-    const alfaNum2       = /^[0-9]{2}[A-Z]{2}[0-9]{2}$/; // 12AB00
-
-    const codigoValido =
-      soloNumerosCod.test(codigo) ||
-      alfaNum1.test(codigo) ||
-      alfaNum2.test(codigo);
-
-    if (!codigoValido) {
-      excelData[i]._errors.Codigo = true;
-      hayErrores = true;
-      this.filasConError.add(i + 1);
-      this.totalErroresExcel++;
-    }
-
-    // ===============================
-    // ===== VALIDACIÓN MATRÍCULA =====
-    // ===============================
-    const matricula = String(excelData[i].Matricula ?? '')
-      .replace(/\s+/g, '')     // elimina espacios invisibles
-      .replace(/[^\d]/g, '');  // deja solo números
-
-    // acepta texto numérico, rechaza basura
-    if (!/^\d{1,6}$/.test(matricula)) {
-      excelData[i]._errors.Matricula = true;
-      hayErrores = true;
-      this.filasConError.add(i + 1);
-      this.totalErroresExcel++;
-    } else {
-      // normalizo definitivamente el valor
-      excelData[i].Matricula = matricula;
-    }
-  }
-
-  return !hayErrores;
-}
-*/
-
-
-validarTipoDeDatos(excelData: any[]): boolean {
-  console.log("validarTipoDeDatos");
-  let hayErrores = false;
-
-  for (let i = 0; i < excelData.length; i++) {
-
-    const matricula = excelData[i].Matricula;
-
-    // acepta número o string numérico
-    const esValida = /^[0-9]+$/.test(String(matricula));
-
-    if (!esValida) {
-      excelData[i]._errors.Matricula = true;
-      hayErrores = true;
-      this.filasConError.add(i + 1);
-      this.totalErroresExcel++;
-    }
-  }
-
-  return !hayErrores;
-}
+          return !hayErrores;
+        }
 
 
 
+        procesarErroresExcel() {
+          const filas = Array.from(this.filasConError).sort((a, b) => a - b);
 
+          /*
+          if (this.totalErroresExcel > 3) {
+            this.errors.push(
+              `Se detectaron ${this.totalErroresExcel} errores en el archivo.
+              Existen más de 3 errores, revise todo el archivo.`
+            );
+          } */
+        console.log("procesarErroresExcel");
+        console.log("totalErroresExcel",this.totalErroresExcel);
 
-procesarErroresExcel() {
-  const filas = Array.from(this.filasConError).sort((a, b) => a - b);
-
-  /*
-  if (this.totalErroresExcel > 3) {
-    this.errors.push(
-      `Se detectaron ${this.totalErroresExcel} errores en el archivo.
-       Existen más de 3 errores, revise todo el archivo.`
-    );
-  } */
- console.log("procesarErroresExcel");
- console.log("totalErroresExcel",this.totalErroresExcel);
-
-  if (this.totalErroresExcel > 3) {
-  this.errors.push(
-    `Existen más de 3 errores, revise todo el archivo.`
-  );
-}
-  else if (this.totalErroresExcel > 0) {
-    this.errors.push(
-      `Se detectaron ${this.totalErroresExcel} errores en las filas: ${filas.join(', ')}.`
-    );
-  }
-}
-
+          if (this.totalErroresExcel > 3) {
+          this.errors.push(
+            `Existen más de 3 errores, revise todo el archivo.`
+          );
+        }
+          else if (this.totalErroresExcel > 0) {
+            this.errors.push(
+              `Se detectaron ${this.totalErroresExcel} errores en las filas: ${filas.join(', ')}.`
+            );
+          }
+        }
 
 
 
-chosenYearHandlerPer(normalizedYear: Moment) {
- // if (this.presentacionForm.controls.periodo.value != null) {
-    const ctrlValue =  this.presentacionForm.controls.periodo.value;//?? moment();
-    ctrlValue.year(normalizedYear.year());
-    this.presentacionForm.controls.periodo.setValue(ctrlValue);
-  //}
-}
+      /*
+      chosenYearHandlerPer(normalizedYear: Moment) {
+          const ctrlValue =  this.presentacionForm.controls.periodo.value;
+          ctrlValue.year(normalizedYear.year());
+          this.presentacionForm.controls.periodo.setValue(ctrlValue);
+      }*/
 
-chosenMonthHandlerPer(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
- // if ( this.presentacionForm.controls.periodo.value != null) {
-    const ctrlValue =  this.presentacionForm.controls.periodo.value;
-    ctrlValue.month(normalizedMonth.month());
-    this.presentacionForm.controls.periodo.setValue(ctrlValue);
-    datepicker.close();
- // }
-}
+        chosenYearHandlerPer(normalizedYear: Moment) {
+           let ctrlValue = this.presentacionForm.controls.periodo.value;
+           // si no hay valor, lo creo
+             if (!ctrlValue) {
+              ctrlValue = moment();
+              }
+           ctrlValue.year(normalizedYear.year());
+             this.presentacionForm.controls.periodo.setValue(ctrlValue);
+        }
+      /*
+      chosenMonthHandlerPer(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+          const ctrlValue =  this.presentacionForm.controls.periodo.value;
+          ctrlValue.month(normalizedMonth.month());
+          this.presentacionForm.controls.periodo.setValue(ctrlValue);
+          datepicker.close();
+        }
+      }*/
 
+         chosenMonthHandlerPer(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+          let ctrlValue = this.presentacionForm.controls.periodo.value;
 
+          if (!ctrlValue) {
+            ctrlValue = moment();
+          }
+
+          ctrlValue.month(normalizedMonth.month());
+          this.presentacionForm.controls.periodo.setValue(ctrlValue);
+
+       
+          this.onFechaSeleccionada2();
+
+          datepicker.close();
+        }
 
 
 }
