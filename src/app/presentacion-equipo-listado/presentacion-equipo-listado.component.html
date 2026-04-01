@@ -12,40 +12,27 @@
            
               <form [formGroup]="filterForm" (ngSubmit)="Enviar()">
               <div>
-                 <!-- Matrícula de login 
-                     <mat-form-field  appearance="outline"  style="width: 200px; max-width: 100%; margin-right: 30px;  margin-top: 30px;margin-left: 30px">
-                        <mat-label>Matrícula</mat-label>
-                         <input matInput type="number" autocomplete="off" formControlName="usuarioSesion"  >
-                     </mat-form-field>-->
-                           
-                 <!-- COMBO DE MATRICULAS (individual y equipo/s)   //   obtenerPlanes(mat,1) el valor 1 es una marca para indicar que se disparo el evento-->
-                  <!--<mat-form-field style="width: 300px; max-width: 100%; margin-right: 30px;  margin-top: 30px;margin-left: 30px">
-                  <mat-select    (selectionChange)="obtenerPlanes($event); limpiarGrillas()"  placeholder="Seleccione la matricula de cierre " formControlName="matriculaCierre" >
-                      <mat-option *ngFor="let mat of listadoMatriculas" [value]="mat.matriculafacturacion">
-                       {{mat.matriculafacturacion}}
-                      </mat-option>
-                 </mat-select>
-                </mat-form-field>
-               FIN combo matriculas-->
-               <!--<button type= "submit"  mat-raised-button color="primary"  [disabled] = ''
-                      style="margin-left: 30px; margin-right: 12px; bottom: 5px;"> Filtrar</button> -->
+               
                </div>
                 <br> 
              </form>
    
-          <!--  <div style="padding: 18px 0 0 420px;text-align: right;">  
-                <button mat-raised-button color="primary" type="button" [routerLink]="['/equipos'] " (click)= "Enviar2()" [disabled]="!(dataSource.data)"
-                 >Presentar Archivos</button>
-            </div>   
-            -->        
+           
 
   <div class="tabla-container">
 
-   <table mat-table [dataSource]="dataSource" class="tabla-sheets">
+  <div *ngIf="sortActivo" class="sort-info">
+  Ordenado por:
+  <b>{{ getNombreColumna(sortActivo) }}</b>
+  ({{ direccionSort === 'asc' ? 'Ascendente' : 'Descendente' }})
+</div>
+
+
+  <table mat-table [dataSource]="dataSource" matSort matSortDisableClear class="tabla-sheets">
 
    <!-- Nro. De Presentacion -->
     <ng-container matColumnDef="NroPres">
-      <th mat-header-cell *matHeaderCellDef> Nro. De Presentación </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. De Presentación </th>
       <td mat-cell *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
 
@@ -63,49 +50,52 @@
 
     <!-- Columna Equipo -->
     <ng-container matColumnDef="Equipo">
-      <th mat-header-cell *matHeaderCellDef> Equipo </th>
+
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Equipo </th>
       <td mat-cell *matCellDef="let element"> {{element.equipo}} </td>
     </ng-container>
 
     <!-- Columna Periodo -->
     <ng-container matColumnDef="Periodo">
-      <th mat-header-cell *matHeaderCellDef> Periodo </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Periodo </th>
       <td mat-cell *matCellDef="let element"> {{element.periodo}} </td>
     </ng-container>
 
      <!-- Columna Cantidad -->
     <ng-container matColumnDef="Cantidad">
-      <th mat-header-cell *matHeaderCellDef> Cantidad de Bonos </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Cantidad de Bonos </th>
+     
       <td mat-cell *matCellDef="let element"> {{element.cantidadRegistros}} </td>
     </ng-container>
 
     <!-- Columna FechaCarga -->
     <ng-container matColumnDef="FechaCarga">
-      <th mat-header-cell *matHeaderCellDef> Fecha de Carga </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha de Carga </th>
       <td mat-cell *matCellDef="let element">{{element.fechaCarga | date:'dd-MM-yyyy'}}</td>
     </ng-container>
 
     <!-- Columna Usuario -->
     <ng-container matColumnDef="Usuario">
-      <th mat-header-cell *matHeaderCellDef> Usuario de Carga </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario de Carga </th>
       <td mat-cell *matCellDef="let element"> {{element.usuarioCarga}} </td>
     </ng-container>
 
     <!-- Columna Estado -->
     <ng-container matColumnDef="Estado">
-      <th mat-header-cell *matHeaderCellDef> Estado </th>
-      <td mat-cell *matCellDef="let element">{{ element.estado }}</td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+      <!--<td mat-cell *matCellDef="let element">{{ element.estado }}</td>-->
+      <td mat-cell *matCellDef="let element">  <span [ngClass]="getEstadoClass(element.estado)">  {{ element.estado }} </span> </td>
     </ng-container>
 
-   <!-- Columna Cantidad de Bonos Aceptados-->
-    <ng-container matColumnDef="BonosAceptados">
-      <th mat-header-cell *matHeaderCellDef> Bonos Aceptados  </th>
+    <!-- Columna Cantidad de Bonos Aceptados-->
+    <ng-container matColumnDef="BonosAceptados" >
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Bonos Aceptados  </th>
       <td mat-cell *matCellDef="let element"> {{element.aceptados}} </td>
     </ng-container>
 
       <!-- Columna Cantidad  de Bonos Rechazados-->
     <ng-container matColumnDef="BonosRechazados">
-      <th mat-header-cell *matHeaderCellDef> Bonos Rechazados </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Bonos Rechazados </th>
       <td mat-cell *matCellDef="let element"> {{element.rechazados}} </td>
     </ng-container>
 

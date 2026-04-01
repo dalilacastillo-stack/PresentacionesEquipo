@@ -18,6 +18,9 @@ import { EquiposService } from '../servicios/equipos.service';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment';
+import { MatSort } from '@angular/material/sort';
+
+
 
 
 
@@ -40,15 +43,22 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
   filterForm:FormGroup;
   user:any;
   displayedColumns: string[] = [ 'NroPres','NombrePresentacion', 'Equipo', 'Periodo', 'Cantidad','FechaCarga', 'Usuario', 'Estado', 'BonosAceptados', 'BonosRechazados', 'Acciones' ];
-  dataSource : any = new MatTableDataSource();//new MatTableDataSource<listaProf>(); --this.listaProf
- //dataSource = new MatTableDataSource<any>([]);
+  //dataSource : any = new MatTableDataSource();//new MatTableDataSource<listaProf>(); --this.listaProf
+  
+  
+  dataSource = new MatTableDataSource<any>([]);
+
   lotesArray: string[];
+
+  sortActivo = '';
+  direccionSort = '';
  
 
   @ViewChild('paginator', { read: MatPaginator }) paginator: MatPaginator;
   @ViewChild('confirmarEliminarDialog') confirmarEliminarDialog: TemplateRef<any>;
   @ViewChild('mensajeEliminadoDialog') mensajeEliminadoDialog: TemplateRef<any>;
   @ViewChild('mostrarLotesDialog') mostrarLotesDialog: TemplateRef<any>;
+  @ViewChild(MatSort) sort: MatSort;
 
  
   constructor(private service: EquiposService, public dialog: MatDialog,  private _snackBar: MatSnackBar, ) {
@@ -68,6 +78,58 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
       usuarioSesion: new FormControl({ value: '', disabled: false }, [Validators.required]),
      // equipoSeleccionado:new FormControl({value:''},[Validators.required] ),
         });
+
+/*
+    this.dataSource.sortingDataAccessor = (item, property) => {
+    switch (property) {
+      case 'NroPres': return item.id;
+      case 'Equipo': return item.equipo;
+      case 'Periodo': return item.periodo;
+      case 'Cantidad': return item.cantidadRegistros;
+      case 'FechaCarga': return item.fechaCarga;
+      case 'Usuario': return item.usuarioCarga;
+      case 'Estado': return item.estado;
+      default: return item[property];
+    }
+  };
+  */
+     this.dataSource.sortingDataAccessor = (item, property) => {
+  switch (property) {
+    case 'NroPres':
+      return Number(item.id);
+
+    case 'Equipo':
+      return (item.equipo || '').toString().trim().toLowerCase();
+
+    case 'Periodo':
+      return Number(item.periodo);
+
+    case 'Cantidad':
+      return Number(item.cantidadRegistros);
+
+    case 'FechaCarga':
+      return new Date(item.fechaCarga);
+
+    case 'Usuario':
+      return (item.usuarioCarga || '').toString().trim().toLowerCase();
+
+    case 'Estado':
+      return (item.estado || '').toString().trim().toLowerCase();
+
+    // 👇 NUEVO
+    case 'BonosAceptados':
+      return Number(item.aceptados);
+
+    // 👇 NUEVO
+    case 'BonosRechazados':
+      return Number(item.rechazados);
+
+    default:
+      return item[property];
+  }
+};
+
+
      this.listadoHeadersProformas();
 
     
@@ -75,6 +137,12 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
 
   ngAfterViewInit() {
       this.dataSource.paginator = this.paginator; // ahora sí funciona
+      this.dataSource.sort = this.sort; 
+
+      this.sort.sortChange.subscribe(sort => {
+      this.sortActivo = sort.active;
+      this.direccionSort = sort.direction;
+       });
   }
 
   listadoHeadersProformas(){
@@ -92,13 +160,23 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
   
      this.service.getHeadersProformas(matricula,idPerfil).subscribe(
         data => {
-                    console.log("data:" + JSON.stringify(data));
-                    
-                    let dataTable = data != null ? data: []; 
-                    this.dataSource.data = dataTable;
-              
-                    //this.dataSource._updateChangeSubscription();
-                    
+                   /* let dataTable = data != null ? data: []; 
+                    this.dataSource.data = dataTable as any[];
+                    */
+                     const dataTable = (data || []) as any[];
+
+    this.dataSource.data = dataTable;
+
+                
+
+    // CLAVE
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;  
+    this.paginator.firstPage();
+
+
+
+                     
                     },
         error => {
                     if (error.status != 0) {  
@@ -112,6 +190,41 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
     
   }
   
+
+
+    getEstadoClass(estado: string): string {
+          switch (estado) {
+            case 'Cargado':
+              return 'badge-cargado';
+            case 'En Proceso':
+              return 'badge-enProceso';
+            case 'Procesado':
+              return 'badge-procesado';
+            case 'Eliminado':
+              return 'badge-eliminado';
+            case 'Pendiente de IOMA-AMP':
+              return 'badge-pendiente';
+            default:
+              return '';
+          }
+    }
+
+
+      getNombreColumna(col: string): string {
+        const map = {
+          NroPres: 'Nro. de Presentación',
+          Equipo: 'Equipo',
+          Periodo: 'Periodo',
+          Cantidad: 'Cantidad de Bonos',
+          FechaCarga: 'Fecha de Carga',
+          Usuario: 'Usuario',
+          Estado: 'Estado',
+          BonosAceptados: 'Bonos Aceptados',
+          BonosRechazados: 'Bonos Rechazados'
+        };
+
+        return map[col] || col;
+      }
 
 eliminarArchivoSeleccionado(data){
  

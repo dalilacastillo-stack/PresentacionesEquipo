@@ -22,6 +22,7 @@ import { PresentacionEquipoDetalleRechazosComponent } from './presentacion-equip
 import { PresentacionEquipoProcFinalComponent } from './presentacion-equipo-proc-final/presentacion-equipo-proc-final.component';
 import { NavbarComponent } from './layout/navbar/navbar.component';
 import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
+import { MatSortModule } from '@angular/material/sort';
 registerLocaleData(localeEsAr, 'es-Ar');
 //Ahora lo vemos
 @NgModule({
@@ -46,7 +47,8 @@ registerLocaleData(localeEsAr, 'es-Ar');
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbDropdownModule
+    NgbDropdownModule,
+    MatSortModule
   ],
   providers: [
     AutheticationService,

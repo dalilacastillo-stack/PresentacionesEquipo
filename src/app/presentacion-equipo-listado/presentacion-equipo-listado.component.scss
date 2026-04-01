@@ -1,3 +1,4 @@
+/*
 .badge-cargado {
     background-color: rgb(166, 177, 19);
   }
@@ -22,9 +23,68 @@
     background-color: rgb(85, 7, 7);
   }
   
+  .badge-pendiente {
+  background-color: orange;
+}
+
+span[class^="badge-"] {
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+*/
+
+
+.sort-info {
+  font-size: 13px;
+  margin-bottom: 10px;
+  color: #555;
+}
 
 
 
+/* BASE tipo chip */
+span[class^="badge-"] {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+
+  letter-spacing: 0.3px;
+  text-align: center;
+  min-width: 110px;
+}
+
+/* Estados */
+
+.badge-cargado {
+  background-color: #fff8e1;
+  color: #f9a825;
+}
+
+.badge-enProceso {
+  background-color: #e3f2fd;
+  color: #1e88e5;
+}
+
+.badge-procesado {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-eliminado {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.badge-pendiente {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
 
 /* ============================================================
    BASE GENERAL PARA TODOS LOS DIALOGS
@@ -190,4 +250,15 @@
 }
 
 
+/*Para los headers de la tabla para que se visualicen las flechas de ordenamiento*/
 
+/* Flechas SIEMPRE visibles */
+::ng-deep .mat-sort-header-arrow {
+  opacity: 0.4 !important;
+  transform: none !important;
+}
+
+/* Cuando está activo */
+::ng-deep .mat-sort-header-sorted .mat-sort-header-arrow {
+  opacity: 1 !important;
+}
