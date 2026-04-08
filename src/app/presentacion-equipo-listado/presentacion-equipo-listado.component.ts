@@ -165,18 +165,35 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
                     */
                      const dataTable = (data || []) as any[];
 
-    this.dataSource.data = dataTable;
+                    /*determina porque columnas se filtrara*/
+                    this.dataSource.filterPredicate = (data: any, filter: string) => {
+                      const dataStr = `
+                        ${data.id}
+                        ${data.nombrePresentacion}
+                        ${data.equipo}
+                        ${data.periodo}
+                        ${data.cantidadRegistros}
+                        ${data.fechaCarga}
+                        ${data.usuarioCarga}
+                        ${data.estado}
+                        ${data.aceptados}
+                        ${data.rechazados}
+                      `.toLowerCase();
 
-                
-
-    // CLAVE
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;  
-    this.paginator.firstPage();
-
+                      return dataStr.includes(filter);
+                    };
 
 
                      
+                     this.dataSource.data = dataTable;
+
+
+
+                    // CLAVE
+                   this.dataSource.paginator = this.paginator;
+                   this.dataSource.sort = this.sort;  
+                    this.paginator.firstPage();
+   
                     },
         error => {
                     if (error.status != 0) {  
@@ -225,6 +242,14 @@ export class PresentacionEquipoListadoComponent implements OnInit , AfterViewIni
 
         return map[col] || col;
       }
+
+applyFilter(event: Event) {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+}
+
+
+
 
 eliminarArchivoSeleccionado(data){
  

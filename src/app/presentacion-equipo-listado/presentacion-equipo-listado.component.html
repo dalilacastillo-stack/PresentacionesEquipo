@@ -27,6 +27,13 @@
   ({{ direccionSort === 'asc' ? 'Ascendente' : 'Descendente' }})
 </div>
 
+<mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+  <mat-label>Buscar</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ej: equipo, usuario, estado...">
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+
+
 
   <table mat-table [dataSource]="dataSource" matSort matSortDisableClear class="tabla-sheets">
 
