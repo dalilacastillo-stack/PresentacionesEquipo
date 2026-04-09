@@ -35,7 +35,9 @@ import { PresentacionEquipoProcComponent } from './presentacion-equipo-proc/pres
 import { PresentacionEquipoRechazosComponent } from './presentacion-equipo-rechazos/presentacion-equipo-rechazos.component';
 import { PresentacionEquipoDetalleRechazosComponent } from './presentacion-equipo-detalle-rechazos/presentacion-equipo-detalle-rechazos.component';
 import { PresentacionEquipoProcFinalComponent } from './presentacion-equipo-proc-final/presentacion-equipo-proc-final.component';
+
 import { LayoutModule } from '@angular/cdk/layout';
+import { PresentacionEquipoPendientesComponent } from './presentacion-equipo-pendientes/presentacion-equipo-pendientes.component';
 
 /*const routes: Routes = [
   { path  : '', pathMatch: 'full'             , redirectTo: 'home'                        },//Por defecto redirecciona a el home
@@ -66,6 +68,7 @@ const routes: Routes = [
       { path: 'equipos-procFinal', component: PresentacionEquipoProcFinalComponent },
       { path: 'equipos-rechazos', component: PresentacionEquipoRechazosComponent },
       { path: 'detalle-rechazos/:id', component: PresentacionEquipoDetalleRechazosComponent  },
+      { path: 'equipos-pendientes', component: PresentacionEquipoPendientesComponent },
       //{ path: '', redirectTo: 'equipos-listado', pathMatch: 'full' }
 
       //SERIA ALGO COMO ESTO LO QUE TE FALTA PERO LA PAGE SERIA LA QUE VE AL INICIAR

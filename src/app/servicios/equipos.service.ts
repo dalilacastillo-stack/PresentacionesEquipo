@@ -377,5 +377,13 @@ getDetalleRechazos(idPres:Number,matricula:any, idPerfil:Number) {
 
 
 
+  getProformasPendientes(matricula:any, idPerfil:Number) {
+    console.log("usuariosesion --->",matricula);
+  return this.http.get(`${this.apiUrl}equipo-listado/getProformasPendientes/${matricula}/${idPerfil}`)
+
+}
+
+
+
 
 }

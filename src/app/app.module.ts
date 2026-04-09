@@ -23,6 +23,7 @@ import { PresentacionEquipoProcFinalComponent } from './presentacion-equipo-proc
 import { NavbarComponent } from './layout/navbar/navbar.component';
 import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
 import { MatSortModule } from '@angular/material/sort';
+import { PresentacionEquipoPendientesComponent } from './presentacion-equipo-pendientes/presentacion-equipo-pendientes.component';
 registerLocaleData(localeEsAr, 'es-Ar');
 //Ahora lo vemos
 @NgModule({
@@ -37,7 +38,8 @@ registerLocaleData(localeEsAr, 'es-Ar');
     PresentacionEquipoRechazosComponent,
     PresentacionEquipoDetalleRechazosComponent,
     PresentacionEquipoProcFinalComponent,
-    NavbarComponent
+    NavbarComponent,
+    PresentacionEquipoPendientesComponent
   ],
   imports: [
     BrowserModule,
